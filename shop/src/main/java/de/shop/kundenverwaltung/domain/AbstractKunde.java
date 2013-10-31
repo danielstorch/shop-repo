@@ -14,6 +14,12 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
 
+@XmlRootElement
+@XmlSeeAlso({ Firmenkunde.class, Privatkunde.class })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+	@Type(value = Privatkunde.class, name = AbstractKunde.PRIVATKUNDE),
+	@Type(value = Firmenkunde.class, name = AbstractKunde.FIRMENKUNDE) })
 public abstract class AbstractKunde {
 
 }
