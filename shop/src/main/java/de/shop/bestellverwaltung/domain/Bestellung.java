@@ -8,9 +8,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
-/**
- * @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
- */
 @XmlRootElement
 public class Bestellung implements Serializable {
 	private static final long serialVersionUID = 1618359234119003714L;
