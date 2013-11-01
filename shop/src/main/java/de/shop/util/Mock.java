@@ -134,5 +134,12 @@ public final class Mock {
 		artikel.setBezeichnung("Bezeichnung_" + id);
 		return artikel;
 	}
+	//create Artikel 
+	public static Artikel createArtikel(Artikel artikel) {
+		final String bezeichnung = artikel.getBezeichnung();
+		artikel.setId(Long.valueOf(bezeichnung.length()));
+		return artikel;
+	}
+	
 	private Mock() { /**/ }
 }
