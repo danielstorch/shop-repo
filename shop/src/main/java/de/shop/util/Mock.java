@@ -11,6 +11,7 @@ import de.shop.kundenverwaltung.domain.Adresse;
 import de.shop.kundenverwaltung.domain.Firmenkunde;
 import de.shop.kundenverwaltung.domain.HobbyType;
 import de.shop.kundenverwaltung.domain.Privatkunde;
+import de.shop.artikelverwaltung.domain.Artikel;
 
 /**
  * Emulation des Anwendungskerns
@@ -19,6 +20,7 @@ public final class Mock {
 	private static final int MAX_ID = 99;
 	private static final int MAX_KUNDEN = 8;
 	private static final int MAX_BESTELLUNGEN = 4;
+	private static final int MAX_ARTIKEL = 55;
 
 	public static AbstractKunde findKundeById(Long id) {
 		if (id > MAX_ID) {
@@ -120,6 +122,17 @@ public final class Mock {
 	public static void deleteKunde(Long kundeId) {
 		System.out.println("Kunde mit ID=" + kundeId + " geloescht");
 	}
-
+	
+	// Gibt ein Artikel aus
+	public static Artikel findArtikelById(Long id) {
+		if(id > MAX_ARTIKEL) {
+			return null;
+		}
+		
+		final Artikel artikel = new Artikel();
+		artikel.setId(id);
+		artikel.setBezeichnung("Bezeichnung_" + id);
+		return artikel;
+	}
 	private Mock() { /**/ }
 }
