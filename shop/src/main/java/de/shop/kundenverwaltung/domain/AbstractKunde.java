@@ -14,6 +14,9 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
 
+/**
+ * @author <a href="mailto:Juergen.Zimmermann@HS-Karlsruhe.de">J&uuml;rgen Zimmermann</a>
+ */
 @XmlRootElement
 @XmlSeeAlso({ Firmenkunde.class, Privatkunde.class })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -39,39 +42,30 @@ public abstract class AbstractKunde implements Serializable {
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	public String getNachname() {
 		return nachname;
 	}
-
 	public void setNachname(String nachname) {
 		this.nachname = nachname;
 	}
-
 	public String getEmail() {
 		return email;
 	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 	public Adresse getAdresse() {
 		return adresse;
 	}
-
 	public void setAdresse(Adresse adresse) {
 		this.adresse = adresse;
 	}
-
 	public List<Bestellung> getBestellungen() {
 		return bestellungen;
 	}
-
 	public void setBestellungen(List<Bestellung> bestellungen) {
 		this.bestellungen = bestellungen;
 	}
@@ -79,11 +73,9 @@ public abstract class AbstractKunde implements Serializable {
 	public URI getBestellungenUri() {
 		return bestellungenUri;
 	}
-
 	public void setBestellungenUri(URI bestellungenUri) {
 		this.bestellungenUri = bestellungenUri;
 	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -115,5 +107,4 @@ public abstract class AbstractKunde implements Serializable {
 		return "AbstractKunde [id=" + id + ", nachname=" + nachname + ", email=" + email
 			   + ", bestellungenUri=" + bestellungenUri + "]";
 	}
-	
 }
