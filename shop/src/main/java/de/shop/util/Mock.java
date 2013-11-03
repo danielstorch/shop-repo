@@ -106,12 +106,9 @@ public final class Mock {
 		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
 		final int id = 1;
 		final AbstractKunde kunde = findKundeById(Long.valueOf(id));  // erstellt kunde mit einer der ID 1
-
 		bestellung.setId(Long.valueOf(id));							// neue bestellung mit ID 1
 		bestellung.setAusgeliefert(false);
 		bestellung.setKunde(kunde);
-		
-		System.out.println("Neue Bestellung: " + bestellung);
 		return bestellung;
 	}
 
