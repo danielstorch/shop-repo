@@ -100,7 +100,7 @@ public final class Mock {
 		
 		return bestellung;
 	}
-	// NEU DANIEL
+	// Create bestellung (leere klammern im tester)
 	public static Bestellung createBestellung(Bestellung bestellung) {
 		// Zufälliger Kunde wird erzeugt mit ID 1
 		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
