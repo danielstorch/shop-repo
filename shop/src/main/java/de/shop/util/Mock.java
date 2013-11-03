@@ -134,10 +134,12 @@ public final class Mock {
 		artikel.setBezeichnung("Bezeichnung_" + id);
 		return artikel;
 	}
-	//create Artikel 
+	//create Artikel  ohne Id (wird automatisch ermitellt)
 	public static Artikel createArtikel(Artikel artikel) {
 		final String bezeichnung = artikel.getBezeichnung();
 		artikel.setId(Long.valueOf(bezeichnung.length()));
+		
+		System.out.println("Neuer Artikel: " + artikel.toString());
 		return artikel;
 	}
 	
