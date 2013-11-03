@@ -123,6 +123,7 @@ public final class Mock {
 		System.out.println("Kunde mit ID=" + kundeId + " geloescht");
 	}
 	
+	
 	// Gibt ein Artikel aus
 	public static Artikel findArtikelById(Long id) {
 		if(id > MAX_ARTIKEL) {
@@ -141,6 +142,10 @@ public final class Mock {
 		
 		System.out.println("Neuer Artikel: " + artikel.toString());
 		return artikel;
+	}
+	//update Artikel
+	public static void updateArtikel(Artikel artikel) {
+		System.out.println("Update Artikel mit ID = " + artikel.getId());
 	}
 	
 	private Mock() { /**/ }

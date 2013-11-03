@@ -51,6 +51,6 @@ public class Artikel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Artikel [id=" + id + ", bezeichnung=" + bezeichnung + "]";
+		return "Artikel [id = " + id + ", bezeichnung = " + bezeichnung + "]";
 	}
 }

@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -25,7 +26,7 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
-import de.shop.kundenverwaltung.domain.AbstractKunde;
+//import de.shop.kundenverwaltung.domain.AbstractKunde;
 //import de.shop.artikelverwaltung.service.ArtikelService;
 //import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
@@ -91,5 +92,14 @@ public class ArtikelResource {
 	public Response createArtikel(Artikel artikel) {
 		artikel = Mock.createArtikel(artikel);
 		return Response.created(getUriArtikel(artikel,uriInfo)).build();
+	}
+	
+	//Put Artikel
+	@PUT
+	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
+	@Produces
+	public void updateArtikel(Artikel artikelID) {
+		// TODO Anwendungskern statt Mock, Verwendung von Locale
+		Mock.updateArtikel(artikelID);
 	}
 }
