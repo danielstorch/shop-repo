@@ -96,6 +96,7 @@ public final class Mock {
 
 		final Bestellung bestellung = new Bestellung();
 		bestellung.setId(id);
+		bestellung.setGesamtpreis(new BigDecimal(5000.0));
 		bestellung.setAusgeliefert(false);
 		bestellung.setKunde(kunde);
 		
@@ -107,7 +108,8 @@ public final class Mock {
 		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
 		final int id = 1;
 		final AbstractKunde kunde = findKundeById(Long.valueOf(id));  // erstellt kunde mit einer der ID 1
-		bestellung.setId(Long.valueOf(id));							// neue bestellung mit ID 1
+		bestellung.setId(Long.valueOf(id)); // neue bestellung mit ID 1
+		bestellung.setGesamtpreis(bestellung.getGesamtpreis());
 		bestellung.setAusgeliefert(false);
 		bestellung.setKunde(kunde);
 		return bestellung;
