@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.math.BigDecimal;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
@@ -143,6 +144,7 @@ public final class Mock {
 		
 		final Artikel artikel = new Artikel();
 		artikel.setId(id);
+		artikel.setPreis(new BigDecimal(50.0 + id));
 		artikel.setBezeichnung("Bezeichnung_" + id);
 		return artikel;
 	}
@@ -150,6 +152,7 @@ public final class Mock {
 	public static Artikel createArtikel(Artikel artikel) {
 		final String bezeichnung = artikel.getBezeichnung();
 		artikel.setId(Long.valueOf(bezeichnung.length()));
+		artikel.setPreis(artikel.getPreis());
 		
 		System.out.println("Neuer Artikel: " + artikel.toString());
 		return artikel;

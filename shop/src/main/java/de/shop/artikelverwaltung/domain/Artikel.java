@@ -1,11 +1,16 @@
 package de.shop.artikelverwaltung.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1472129607838538329L;
 	
 	private Long id;
+	private BigDecimal preis;
 	
 	// TODO Bean Validation
 	private String bezeichnung;
@@ -22,6 +27,12 @@ public class Artikel implements Serializable {
 	public void setBezeichnung(String bezeichnung) {
 		this.bezeichnung = bezeichnung;
 	}
+	public BigDecimal getPreis() {
+		return preis;
+	}
+	public void setPreis(BigDecimal preis) {
+		this.preis = preis;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -29,6 +40,8 @@ public class Artikel implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((bezeichnung == null) ? 0 : bezeichnung.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((preis == null) ? 0 : preis.hashCode());
 		return result;
 	}
 	
@@ -40,17 +53,28 @@ public class Artikel implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Artikel other = (Artikel) obj;
+		Artikel other = (Artikel) obj;
 		if (bezeichnung == null) {
 			if (other.bezeichnung != null)
 				return false;
 		} else if (!bezeichnung.equals(other.bezeichnung))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (preis == null) {
+			if (other.preis != null)
+				return false;
+		} else if (!preis.equals(other.preis))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Artikel [id = " + id + ", bezeichnung = " + bezeichnung + "]";
+		return "Artikel [id=" + id + ", preis=" + preis + ", bezeichnung="
+				+ bezeichnung + "]";
 	}
 }
