@@ -3,6 +3,7 @@ package de.shop.bestellverwaltung.domain;
 import java.io.Serializable;
 import java.net.URI;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -16,6 +17,7 @@ public class Bestellung implements Serializable {
 	private Long id;
 	private BigDecimal gesamtpreis;
 	private boolean ausgeliefert;
+	private List<Posten> posten;
 	
 	@XmlTransient
 	private AbstractKunde kunde;
@@ -52,6 +54,12 @@ public class Bestellung implements Serializable {
 	public void setGesamtpreis(BigDecimal gesamtpreis) {
 		this.gesamtpreis = gesamtpreis;
 	}
+	public List<Posten> getPosten() {
+		return posten;
+	}
+	public void setPosten(List<Posten> posten) {
+		this.posten = posten;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -64,6 +72,7 @@ public class Bestellung implements Serializable {
 		result = prime * result + ((kunde == null) ? 0 : kunde.hashCode());
 		result = prime * result
 				+ ((kundeUri == null) ? 0 : kundeUri.hashCode());
+		result = prime * result + ((posten == null) ? 0 : posten.hashCode());
 		return result;
 	}
 	@Override
@@ -97,13 +106,28 @@ public class Bestellung implements Serializable {
 				return false;
 		} else if (!kundeUri.equals(other.kundeUri))
 			return false;
+		if (posten == null) {
+			if (other.posten != null)
+				return false;
+		} else if (!posten.equals(other.posten))
+			return false;
 		return true;
 	}
 	
 	@Override
 	public String toString() {
 		return "Bestellung [id=" + id + ", gesamtpreis=" + gesamtpreis
-				+ ", ausgeliefert=" + ausgeliefert + ", kundeUri=" + kundeUri
-				+ "]";
+				+ ", ausgeliefert=" + ausgeliefert + ", posten=" + posten
+				+ ", kundeUri=" + kundeUri + "]";
+	}
+	
+	public BigDecimal gesamtpreisBerechnung() {
+		BigDecimal gp = new BigDecimal(0.0);
+		
+		for(Posten p : posten) {
+			gp = gp.add((p.getArtikel().getPreis()).multiply(new BigDecimal(p.getAnzahl())));
+		}
+		
+		return gp;
 	}
 }

@@ -13,6 +13,7 @@ import de.shop.kundenverwaltung.domain.Firmenkunde;
 import de.shop.kundenverwaltung.domain.HobbyType;
 import de.shop.kundenverwaltung.domain.Privatkunde;
 import de.shop.artikelverwaltung.domain.Artikel;
+import de.shop.bestellverwaltung.domain.Posten;
 
 /**
  * Emulation des Anwendungskerns
@@ -96,22 +97,32 @@ public final class Mock {
 
 		final Bestellung bestellung = new Bestellung();
 		bestellung.setId(id);
-		bestellung.setGesamtpreis(new BigDecimal(5000.0));
 		bestellung.setAusgeliefert(false);
 		bestellung.setKunde(kunde);
+		List<Posten> posten = new ArrayList<>();
+		for(int zl = 1; zl < 4; ++zl) {
+			Posten p = new Posten();
+			p.setAnzahl(5);
+			p.setArtikel(findArtikelById(Long.valueOf(zl)));
+			
+			posten.add(p);
+		}
+		bestellung.setPosten(posten);
+		bestellung.setGesamtpreis(bestellung.gesamtpreisBerechnung());
 		
 		return bestellung;
 	}
 	// Create bestellung (leere klammern im tester)
 	public static Bestellung createBestellung(Bestellung bestellung) {
-		// Zufälliger Kunde wird erzeugt mit ID 1
-		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
+//		// Zufälliger Kunde wird erzeugt mit ID 1
+//		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
 		final int id = 1;
-		final AbstractKunde kunde = findKundeById(Long.valueOf(id));  // erstellt kunde mit einer der ID 1
-		bestellung.setId(Long.valueOf(id)); // neue bestellung mit ID 1
-		bestellung.setGesamtpreis(bestellung.getGesamtpreis());
-		bestellung.setAusgeliefert(false);
-		bestellung.setKunde(kunde);
+//		final AbstractKunde kunde = findKundeById(Long.valueOf(id));  // erstellt kunde mit einer der ID 1
+//		bestellung.setId(Long.valueOf(id)); // neue bestellung mit ID 1
+//		bestellung.setGesamtpreis(bestellung.getGesamtpreis());
+//		bestellung.setAusgeliefert(false);
+//		bestellung.setKunde(kunde);
+		bestellung = findBestellungById(Long.valueOf(id));
 		return bestellung;
 	}
 

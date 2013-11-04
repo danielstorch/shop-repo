@@ -19,7 +19,9 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import de.shop.artikelverwaltung.rest.ArtikelResource;
 import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.bestellverwaltung.domain.Posten;
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.kundenverwaltung.rest.KundeResource;
 import de.shop.util.Mock;
@@ -38,6 +40,9 @@ public class BestellungResource {
 	
 	@Inject
 	private KundeResource kundeResource;
+	
+	@Inject
+	private ArtikelResource artikelResource;
 	
 	@GET
 	@Path("{id:[1-9][0-9]*}")
@@ -64,6 +69,12 @@ public class BestellungResource {
 		if (kunde != null) {
 			final URI kundeUri = kundeResource.getUriKunde(bestellung.getKunde(), uriInfo);
 			bestellung.setKundeUri(kundeUri);
+		}
+		for(Posten p : bestellung.getPosten()) {
+			if(p != null) {
+				final URI artikelURI = artikelResource.getUriArtikel(p.getArtikel(), uriInfo);
+				p.setArtikelURI(artikelURI);
+			}
 		}
 	}
 	
