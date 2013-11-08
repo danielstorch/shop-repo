@@ -3,16 +3,26 @@ package de.shop.artikelverwaltung.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1472129607838538329L;
 	
+	private static final int BEZEICHNUNG_LENGTH_MAX = 32;
+	
+	@NotNull
 	private Long id;
+	
+	@NotNull(message = "{artikelverwaltung.artikel.preis.notNull}")
+	@DecimalMin("0.01")
 	private BigDecimal preis;
 	
-	// TODO Bean Validation
+	@NotNull(message = "{artikelverwaltung.artikel.bezeichnung.notNull}")
+	@Size(max = BEZEICHNUNG_LENGTH_MAX, message = "{artikelverwaltung.artikel.bezeichnung.length}")
 	private String bezeichnung;
 	
 	public Long getId() {
