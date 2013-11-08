@@ -1,19 +1,28 @@
 package de.shop.bestellverwaltung.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 
 @XmlRootElement
-public class Posten {
+public class Posten implements Serializable {
+	private static final long serialVersionUID = -8996268150091727718L;
+
+	private static final int ANZAHL_MIN = 1;
 	
+	@NotNull(message = "{bestellverwaltung.posten.artikel.notNull}")
 	@XmlTransient
 	private Artikel artikel;
 	
+	@Min(value = ANZAHL_MIN, message = "{bestellverwaltung.posten.anzahl.min}")
 	private int anzahl;
+	
 	private URI artikelURI;
 	
 	public Artikel getArtikel() {

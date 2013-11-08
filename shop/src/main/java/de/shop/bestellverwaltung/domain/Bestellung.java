@@ -5,8 +5,11 @@ import java.net.URI;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import de.shop.kundenverwaltung.domain.AbstractKunde;
 
@@ -14,9 +17,15 @@ import de.shop.kundenverwaltung.domain.AbstractKunde;
 public class Bestellung implements Serializable {
 	private static final long serialVersionUID = 1618359234119003714L;
 	
+	@NotNull
 	private Long id;
+	
+	@NotNull(message = "{bestellverwaltung.bestellung.gesamtpreis.notNull}")
 	private BigDecimal gesamtpreis;
+	
 	private boolean ausgeliefert;
+	
+	@NotEmpty(message = "{bestellverwaltung.bestellung.posten.notEmpty}")
 	private List<Posten> posten;
 	
 	@XmlTransient
@@ -120,7 +129,7 @@ public class Bestellung implements Serializable {
 				+ ", ausgeliefert=" + ausgeliefert + ", posten=" + posten
 				+ ", kundeUri=" + kundeUri + "]";
 	}
-	
+	//Rechnet den gesamtpreis aus aller posten
 	public BigDecimal gesamtpreisBerechnung() {
 		BigDecimal gp = new BigDecimal(0.0);
 		
