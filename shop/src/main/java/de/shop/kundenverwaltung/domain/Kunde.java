@@ -1,20 +1,54 @@
 package de.shop.kundenverwaltung.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
 
 @XmlRootElement
-public class Kunde {
-	private Long id;
+public class Kunde implements Serializable{
+	private static final long serialVersionUID = -8477316271106761155L;
+	
+	private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF]+";
+	private static final String EMAIL_PATTERN = "[\\w.%-]+@[\\w.%-]+\\.[A-Za-z]{2,4}";
+    private static final String PREFIX_ADEL = "(o'|von|von der|von und zu|van)?";
+
+    public static final String NACHNAME_PATTERN = PREFIX_ADEL + NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
+    public static final String VORNAME_PATTERN = NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
+
+    public static final int NAME_LENGTH_MIN = 3;
+    public static final int NAME_LENGTH_MAX = 32;
+    public static final int EMAIL_LENGTH_MAX = 32;
+	
+	@NotNull(message = "{kunde.id.notNull}")
+    private Long id;
+	
+	@NotNull(message = "{kunde.nachname.notNull}")
+    @Size(min = NAME_LENGTH_MIN, max = NAME_LENGTH_MAX, message = "{kunde.nachname.length}")
+    @Pattern(regexp = NACHNAME_PATTERN, message = "{kunde.nachname.pattern}")
 	private String nachname;
+	
+	@NotNull(message = "{kunde.vorname.notNull}")
+    @Size(min = NAME_LENGTH_MIN, max = NAME_LENGTH_MAX, message = "{kunde.vorname.length}")
+    @Pattern(regexp = VORNAME_PATTERN, message = "{kunde.vorname.pattern}")
 	private String vorname;
+	
+	@NotNull(message = "{kunde.email.notNull}")
+	@Size(max = EMAIL_LENGTH_MAX, message = "{kunde.email.length}")
+	@Pattern(regexp = EMAIL_PATTERN, message = "{kunde.email.pattern}")
 	private String email;
+	
+	@NotNull(message = "{kunde.adresse.notNull}")
+	@Valid
 	private Adresse adresse;
 	
 	@XmlTransient
