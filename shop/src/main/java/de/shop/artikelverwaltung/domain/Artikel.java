@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,18 +13,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1472129607838538329L;
 	
+	private static final int BEZEICHNUNG_LENGTH_MIN = 2;
 	private static final int BEZEICHNUNG_LENGTH_MAX = 32;
+	public static final String BEZEICHNUNG_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF0-9]+"
+            + "(-[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF0-9]+)?";
+	
 	
 	@NotNull
 	private Long id;
 	
 	@NotNull(message = "{artikelverwaltung.artikel.preis.notNull}")
-	@DecimalMin("0.01")
+	@DecimalMin(value = "0.00", message = "{artikelverwaltung.artikel.preis.min}")
 	private BigDecimal preis;
 	
 	@NotNull(message = "{artikelverwaltung.artikel.bezeichnung.notNull}")
-	@Size(max = BEZEICHNUNG_LENGTH_MAX, message = "{artikelverwaltung.artikel.bezeichnung.length}")
-	private String bezeichnung;
+	@Size(min = BEZEICHNUNG_LENGTH_MIN, max = BEZEICHNUNG_LENGTH_MAX, message = "{artikel.bezeichnung.length}")
+	@Pattern(regexp = BEZEICHNUNG_PATTERN, message = "{artikel.bezeichnung.pattern}")
+	private String bezeichnung = "";
 	
 	public Long getId() {
 		return id;
