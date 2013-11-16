@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import de.shop.kundenverwaltung.domain.AbstractKunde;
+import de.shop.kundenverwaltung.domain.Kunde;
 
 @XmlRootElement
 public class Bestellung implements Serializable {
@@ -29,7 +29,7 @@ public class Bestellung implements Serializable {
 	private List<Posten> posten;
 	
 	@XmlTransient
-	private AbstractKunde kunde;
+	private Kunde kunde;
 	
 	private URI kundeUri;
 	
@@ -45,10 +45,10 @@ public class Bestellung implements Serializable {
 	public void setAusgeliefert(boolean ausgeliefert) {
 		this.ausgeliefert = ausgeliefert;
 	}
-	public AbstractKunde getKunde() {
+	public Kunde getKunde() {
 		return kunde;
 	}
-	public void setKunde(AbstractKunde kunde) {
+	public void setKunde(Kunde kunde) {
 		this.kunde = kunde;
 	}
 	public URI getKundeUri() {
