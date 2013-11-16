@@ -5,6 +5,7 @@ import java.net.URI;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -26,6 +27,7 @@ public class Bestellung implements Serializable {
 	private boolean ausgeliefert;
 	
 	@NotEmpty(message = "{bestellverwaltung.bestellung.posten.notEmpty}")
+	@Valid
 	private List<Posten> posten;
 	
 	@XmlTransient

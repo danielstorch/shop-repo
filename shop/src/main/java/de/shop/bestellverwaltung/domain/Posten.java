@@ -16,6 +16,9 @@ public class Posten implements Serializable {
 
 	private static final int ANZAHL_MIN = 1;
 	
+	@NotNull
+	private Long id;
+	
 	@NotNull(message = "{bestellverwaltung.posten.artikel.notNull}")
 	@XmlTransient
 	private Artikel artikel;
@@ -43,6 +46,12 @@ public class Posten implements Serializable {
 	public void setArtikelURI(URI artikelURI) {
 		this.artikelURI = artikelURI;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -52,6 +61,7 @@ public class Posten implements Serializable {
 		result = prime * result + ((artikel == null) ? 0 : artikel.hashCode());
 		result = prime * result
 				+ ((artikelURI == null) ? 0 : artikelURI.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 	
@@ -76,11 +86,17 @@ public class Posten implements Serializable {
 				return false;
 		} else if (!artikelURI.equals(other.artikelURI))
 			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
 		return true;
 	}
 	
 	@Override
 	public String toString() {
-		return "Posten [anzahl=" + anzahl + ", artikelURI=" + artikelURI + "]";
+		return "Posten [id=" + id + ", anzahl=" + anzahl + ", artikelURI="
+				+ artikelURI + "]";
 	}
 }
