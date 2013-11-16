@@ -19,7 +19,7 @@ public class Artikel implements Serializable {
             + "(-[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF0-9]+)?";
 	
 	
-	@NotNull
+	@NotNull(message = "{artikel.id.notNull}")
 	private Long id;
 	
 	@NotNull(message = "{artikelverwaltung.artikel.preis.notNull}")
