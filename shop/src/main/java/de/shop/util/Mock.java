@@ -116,7 +116,7 @@ public final class Mock {
 			Posten p = new Posten();
 			p.setAnzahl(5);
 			p.setArtikel(findArtikelById(Long.valueOf(zl)));
-			//p.setId(Long.valueOf(zl));
+			p.setId(Long.valueOf(zl));
 			posten.add(p);
 		}
 		bestellung.setPosten(posten);
