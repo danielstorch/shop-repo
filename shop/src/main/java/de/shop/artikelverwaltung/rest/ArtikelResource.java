@@ -27,7 +27,7 @@ import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 //import de.shop.kundenverwaltung.domain.AbstractKunde;
-//import de.shop.artikelverwaltung.service.ArtikelService;
+import de.shop.artikelverwaltung.service.ArtikelService;
 //import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
 import de.shop.util.rest.UriHelper;
@@ -41,8 +41,8 @@ public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	//private static final String NOT_FOUND_ID = "artikel.notFound.id";
 	
-	//@Inject
-	//private ArtikelService as;
+	@Inject
+	private ArtikelService as;
 	
 	@Inject
 	private UriHelper uriHelper;
@@ -63,7 +63,7 @@ public class ArtikelResource {
 	@GET
 	@Path("{id:[1-9][0-9]*}")
 	public Response findArtikelById(@PathParam("id") Long id, @Context UriInfo uriInfo) {
-		final Artikel artikel = Mock.findArtikelById(id);
+		final Artikel artikel = as.findArtikelById(id);
 		if (artikel == null) {
 			throw new NotFoundException("Der gesuchte Artikel mit der ID: " + id + " gibt es nicht");
 		}
@@ -90,7 +90,7 @@ public class ArtikelResource {
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
 	public Response createArtikel(Artikel artikel) {
-		artikel = Mock.createArtikel(artikel);
+		artikel = as.createArtikel(artikel);
 		return Response.created(getUriArtikel(artikel,uriInfo)).build();
 	}
 	
@@ -98,8 +98,9 @@ public class ArtikelResource {
 	@PUT
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public void updateArtikel(Artikel artikelID) {
+	public Response updateArtikel(Artikel artikelID) {
 		// TODO Anwendungskern statt Mock, Verwendung von Locale
-		Mock.updateArtikel(artikelID);
+		as.updateArtikel(artikelID);
+		return Response.created(getUriArtikel(artikelID, uriInfo)).build();
 	}
 }
