@@ -1,7 +1,14 @@
 package de.shop.bestellverwaltung.service;
 
-import java.io.Serializable;
+import java.util.List;
 
-public class BestellungService implements Serializable {
+import de.shop.bestellverwaltung.domain.Bestellung;
+import de.shop.kundenverwaltung.domain.Kunde;
 
+public interface BestellungService {
+	Bestellung findBestellungById(Long id);
+	List<Bestellung> findBestellungenByKunde(Kunde kunde);
+	Bestellung createBestellung(Bestellung bestellung);
+	Kunde findKundeByBestellungId(Long id);
 }
+

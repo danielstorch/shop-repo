@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 import de.shop.artikelverwaltung.rest.ArtikelResource;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.domain.Posten;
+import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.kundenverwaltung.domain.Kunde;
 import de.shop.kundenverwaltung.rest.KundeResource;
 import de.shop.util.Mock;
@@ -42,24 +43,26 @@ public class BestellungResource {
 	private KundeResource kundeResource;
 	
 	@Inject
+    private BestellungService bs;
+	
+	@Inject
 	private ArtikelResource artikelResource;
 	
 	@GET
 	@Path("{id:[1-9][0-9]*}")
 	public Response findBestellungById(@PathParam("id") Long id) {
-		// TODO Anwendungskern statt Mock, Verwendung von Locale
-		final Bestellung bestellung = Mock.findBestellungById(id);
+		final Bestellung bestellung = bs.findBestellungById(id);
 		if (bestellung == null) {
 			throw new NotFoundException("Keine Bestellung mit der ID " + id + " gefunden.");
 		}
 		
+		// URIs innerhalb der gefundenen Bestellung anpassen
 		setStructuralLinks(bestellung, uriInfo);
 		
 		// Link-Header setzen
 		final Response response = Response.ok(bestellung)
                                           .links(getTransitionalLinks(bestellung, uriInfo))
                                           .build();
-		
 		return response;
 	}
 	
@@ -70,6 +73,8 @@ public class BestellungResource {
 			final URI kundeUri = kundeResource.getUriKunde(bestellung.getKunde(), uriInfo);
 			bestellung.setKundeUri(kundeUri);
 		}
+		
+		// URI fuer Artikel in den Bestellpositionen setzen
 		for(Posten p : bestellung.getPosten()) {
 			if(p != null) {
 				final URI artikelURI = artikelResource.getUriArtikel(p.getArtikel(), uriInfo);
@@ -88,6 +93,7 @@ public class BestellungResource {
 	public URI getUriBestellung(Bestellung bestellung, UriInfo uriInfo) {
 		return uriHelper.getUri(BestellungResource.class, "findBestellungById", bestellung.getId(), uriInfo);
 	}
+	
 	// Erzeugt neue Bestellungen für Kunde
 	@POST
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
@@ -100,4 +106,18 @@ public class BestellungResource {
 		return Response.created(getUriBestellung(bestellung, uriInfo))
 			           .build();
 	}
+	
+	@GET
+    @Path("{id:[1-9][0-9]*}/kunde")
+    public Response findKundeByBestellungId(@PathParam("id") Long id) {
+            final Kunde kunde = bs.findKundeByBestellungId(id);
+            if (kunde == null) {
+            		throw new NotFoundException("Kein Kunde zu der Bestellung mit der ID " + id + " gefunden.");
+            }
+
+            kundeResource.setStructuralLinks(kunde, uriInfo);
+
+            // Link Header setzen
+            return Response.ok(kunde).links(kundeResource.getTransitionalLinks(kunde, uriInfo)).build();
+    }
 }

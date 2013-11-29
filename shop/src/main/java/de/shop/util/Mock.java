@@ -100,6 +100,11 @@ public final class Mock {
 		return bestellungen;
 	}
 
+	public static Kunde findKundeByBestellungId(Long id) {
+		final Bestellung bestellung = findBestellungById(id);
+		return bestellung.getKunde();
+	}
+	
 	public static Bestellung findBestellungById(Long id) {
 		if (id > MAX_ID) {
 			return null;
@@ -124,16 +129,12 @@ public final class Mock {
 		
 		return bestellung;
 	}
+	
 	// Create bestellung (leere klammern im tester)
 	public static Bestellung createBestellung(Bestellung bestellung) {
 //		// Zufälliger Kunde wird erzeugt mit ID 1
 //		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
 		final int id = 1;
-//		final Kunde kunde = findKundeById(Long.valueOf(id));  // erstellt kunde mit einer der ID 1
-//		bestellung.setId(Long.valueOf(id)); // neue bestellung mit ID 1
-//		bestellung.setGesamtpreis(bestellung.getGesamtpreis());
-//		bestellung.setAusgeliefert(false);
-//		bestellung.setKunde(kunde);
 		bestellung = findBestellungById(Long.valueOf(id));
 		return bestellung;
 	}
