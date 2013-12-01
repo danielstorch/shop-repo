@@ -98,7 +98,7 @@ public class KundeResource {
 			setStructuralLinks(k, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden){})
+		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { } )
                        .links(getTransitionalLinksKunden(kunden, uriInfo))
                        .build();			
 	}
@@ -130,7 +130,7 @@ public class KundeResource {
                                 .rel(REMOVE_LINK)
                                 .build();
 		
-		return new Link[] { self, add, update, remove };
+		return new Link[] {self, add, update, remove};
 	}
 
 	
@@ -159,7 +159,7 @@ public class KundeResource {
 			setStructuralLinks(k, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden){})
+		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { } )
                        .links(getTransitionalLinksKunden(kunden, uriInfo))
                        .build();
 	}
@@ -184,7 +184,7 @@ public class KundeResource {
 			setStructuralLinks(k, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden){})
+		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { } )
                        .links(getTransitionalLinksKunden(kunden, uriInfo))
                        .build();
 	}
@@ -202,7 +202,7 @@ public class KundeResource {
                               .rel(LAST_LINK)
                               .build();
 		
-		return new Link[] { first, last };
+		return new Link[] {first, last};
 	}
 	
 	@GET
@@ -219,7 +219,7 @@ public class KundeResource {
 			bestellungResource.setStructuralLinks(bestellung, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<Bestellung>>(bestellungen){})
+		return Response.ok(new GenericEntity<List<Bestellung>>(bestellungen) { } )
                        .links(getTransitionalLinksBestellungen(bestellungen, kunde, uriInfo))
                        .build();
 	}
@@ -242,7 +242,7 @@ public class KundeResource {
                               .rel(LAST_LINK)
                               .build();
 		
-		return new Link[] { self, first, last };
+		return new Link[] {self, first, last};
 	}
 	
 	@POST

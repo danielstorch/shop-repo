@@ -75,8 +75,8 @@ public class BestellungResource {
 		}
 		
 		// URI fuer Artikel in den Bestellpositionen setzen
-		for(Posten p : bestellung.getPosten()) {
-			if(p != null) {
+		for (Posten p : bestellung.getPosten()) {
+			if (p != null) {
 				final URI artikelURI = artikelResource.getUriArtikel(p.getArtikel(), uriInfo);
 				p.setArtikelURI(artikelURI);
 			}
@@ -87,7 +87,7 @@ public class BestellungResource {
 		final Link self = Link.fromUri(getUriBestellung(bestellung, uriInfo))
                               .rel(SELF_LINK)
                               .build();
-		return new Link[] { self };
+		return new Link[] {self};
 	}
 	
 	public URI getUriBestellung(Bestellung bestellung, UriInfo uriInfo) {

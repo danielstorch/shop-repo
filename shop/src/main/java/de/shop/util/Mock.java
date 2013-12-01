@@ -116,9 +116,9 @@ public final class Mock {
 		bestellung.setId(id);
 		bestellung.setAusgeliefert(false);
 		bestellung.setKunde(kunde);
-		List<Posten> posten = new ArrayList<>();
-		for(int zl = 1; zl < 4; ++zl) {
-			Posten p = new Posten();
+		final List<Posten> posten = new ArrayList<>();
+		for (int zl = 1; zl < 4; ++zl) {
+			final Posten p = new Posten();
 			p.setAnzahl(5);
 			p.setArtikel(findArtikelById(Long.valueOf(zl)));
 			p.setId(Long.valueOf(zl));
@@ -164,7 +164,7 @@ public final class Mock {
 	
 	// Gibt ein Artikel aus
 	public static Artikel findArtikelById(Long id) {
-		if(id > MAX_ARTIKEL) {
+		if (id > MAX_ARTIKEL) {
 			return null;
 		}
 		

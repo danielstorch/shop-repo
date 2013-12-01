@@ -11,4 +11,3 @@ public interface BestellungService {
 	Bestellung createBestellung(Bestellung bestellung);
 	Kunde findKundeByBestellungId(Long id);
 }
-

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+//import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -65,26 +65,35 @@ public class Artikel implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+		
 		if (obj == null)
 			return false;
+		
 		if (getClass() != obj.getClass())
 			return false;
-		Artikel other = (Artikel) obj;
+		
+		final Artikel other = (Artikel) obj;
 		if (bezeichnung == null) {
-			if (other.bezeichnung != null)
-				return false;
-		} else if (!bezeichnung.equals(other.bezeichnung))
+		  if (other.bezeichnung != null)
 			return false;
+		  }
+		else if (!bezeichnung.equals(other.bezeichnung))
+			return false;
+		
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} 
+		else if (!id.equals(other.id))
 			return false;
+		
 		if (preis == null) {
 			if (other.preis != null)
 				return false;
-		} else if (!preis.equals(other.preis))
+		} 
+		else if (!preis.equals(other.preis))
 			return false;
+		
 		return true;
 	}
 

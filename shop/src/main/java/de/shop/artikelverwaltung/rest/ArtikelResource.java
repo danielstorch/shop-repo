@@ -78,7 +78,7 @@ public class ArtikelResource {
                               .rel(SELF_LINK)
                               .build();
 
-		return new Link[] { self };
+		return new Link[] {self};
 	}
 	
 	public URI getUriArtikel(Artikel artikel, UriInfo uriInfo) {
@@ -91,7 +91,7 @@ public class ArtikelResource {
 	@Produces
 	public Response createArtikel(@Valid Artikel artikel) {
 		artikel = as.createArtikel(artikel);
-		return Response.created(getUriArtikel(artikel,uriInfo)).build();
+		return Response.created(getUriArtikel(artikel, uriInfo)).build();
 	}
 	
 	//Put Artikel

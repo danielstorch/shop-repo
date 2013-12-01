@@ -94,34 +94,44 @@ public class Bestellung implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Bestellung other = (Bestellung) obj;
+		final Bestellung other = (Bestellung) obj;
 		if (ausgeliefert != other.ausgeliefert)
 			return false;
 		if (gesamtpreis == null) {
 			if (other.gesamtpreis != null)
 				return false;
-		} else if (!gesamtpreis.equals(other.gesamtpreis))
+		} 
+		else if (!gesamtpreis.equals(other.gesamtpreis))
 			return false;
+		
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} 
+		else if (!id.equals(other.id))
 			return false;
+		
 		if (kunde == null) {
 			if (other.kunde != null)
 				return false;
-		} else if (!kunde.equals(other.kunde))
+		} 
+		else if (!kunde.equals(other.kunde))
 			return false;
+		
 		if (kundeUri == null) {
 			if (other.kundeUri != null)
 				return false;
-		} else if (!kundeUri.equals(other.kundeUri))
+		} 
+		else if (!kundeUri.equals(other.kundeUri))
 			return false;
+		
 		if (posten == null) {
 			if (other.posten != null)
 				return false;
-		} else if (!posten.equals(other.posten))
+		} 
+		else if (!posten.equals(other.posten))
 			return false;
+		
 		return true;
 	}
 	
@@ -135,7 +145,7 @@ public class Bestellung implements Serializable {
 	public BigDecimal gesamtpreisBerechnung() {
 		BigDecimal gp = new BigDecimal(0.0);
 		
-		for(Posten p : posten) {
+		for (Posten p : posten) {
 			gp = gp.add((p.getArtikel().getPreis()).multiply(new BigDecimal(p.getAnzahl())));
 		}
 		

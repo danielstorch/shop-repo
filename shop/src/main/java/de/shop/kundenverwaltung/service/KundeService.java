@@ -38,7 +38,7 @@ public class KundeService implements Serializable {
 		return Mock.findKundenByNachname(vorname);
 	}
 	
-	public Kunde createKunde (Kunde kunde) {
+	public Kunde createKunde(Kunde kunde) {
 		if (kunde == null) {
 			return kunde;
 		}
@@ -61,7 +61,7 @@ public class KundeService implements Serializable {
 	}
 	
 	public void deleteKunde(Long kundeId) {
-		Kunde kunde = findKundeById(kundeId);  // Kein Aufruf als Business-Methode
+		final Kunde kunde = findKundeById(kundeId);  // Kein Aufruf als Business-Methode
 		if (kunde == null) {
 			return;
 		}

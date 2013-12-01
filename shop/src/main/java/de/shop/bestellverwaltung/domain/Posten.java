@@ -73,24 +73,28 @@ public class Posten implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Posten other = (Posten) obj;
+		final Posten other = (Posten) obj;
 		if (anzahl != other.anzahl)
 			return false;
+		
 		if (artikel == null) {
 			if (other.artikel != null)
 				return false;
 		} else if (!artikel.equals(other.artikel))
 			return false;
+		
 		if (artikelURI == null) {
 			if (other.artikelURI != null)
 				return false;
 		} else if (!artikelURI.equals(other.artikelURI))
 			return false;
+		
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		
 		return true;
 	}
 	
