@@ -98,7 +98,7 @@ public class KundeResource {
 			setStructuralLinks(k, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { } )
+		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { })
                        .links(getTransitionalLinksKunden(kunden, uriInfo))
                        .build();			
 	}
@@ -159,7 +159,7 @@ public class KundeResource {
 			setStructuralLinks(k, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { } )
+		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { })
                        .links(getTransitionalLinksKunden(kunden, uriInfo))
                        .build();
 	}
@@ -184,7 +184,7 @@ public class KundeResource {
 			setStructuralLinks(k, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { } )
+		return Response.ok(new GenericEntity<List<? extends Kunde>>(kunden) { })
                        .links(getTransitionalLinksKunden(kunden, uriInfo))
                        .build();
 	}
@@ -219,7 +219,7 @@ public class KundeResource {
 			bestellungResource.setStructuralLinks(bestellung, uriInfo);
 		}
 		
-		return Response.ok(new GenericEntity<List<Bestellung>>(bestellungen) { } )
+		return Response.ok(new GenericEntity<List<Bestellung>>(bestellungen) { })
                        .links(getTransitionalLinksBestellungen(bestellungen, kunde, uriInfo))
                        .build();
 	}
