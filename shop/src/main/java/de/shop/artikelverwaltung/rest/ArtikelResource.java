@@ -100,6 +100,6 @@ public class ArtikelResource {
 	public Response updateArtikel(Artikel artikelID) {
 		// TODO Anwendungskern statt Mock, Verwendung von Locale
 		as.updateArtikel(artikelID);
-		return Response.created(getUriArtikel(artikelID, uriInfo)).build();
+		return Response.noContent().links(getTransitionalLinks(artikelID, uriInfo)).build();
 	}
 }

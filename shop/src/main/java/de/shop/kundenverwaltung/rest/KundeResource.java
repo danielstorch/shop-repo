@@ -257,14 +257,16 @@ public class KundeResource {
 	@PUT
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public void updateKunde(Kunde kunde) {
+	public Response updateKunde(Kunde kunde) {
 		ks.updateKunde(kunde);
+		return Response.noContent().links(getTransitionalLinks(kunde, uriInfo)).build();
 	}
 	
 	@DELETE
 	@Path("{id:[1-9][0-9]*}")
 	@Produces
-	public void deleteKunde(@PathParam("id") Long kundeId) {
+	public Response deleteKunde(@PathParam("id") Long kundeId) {
 		ks.deleteKunde(kundeId);
+		return Response.noContent().links(getTransitionalLinks(ks.findKundeById(kundeId), uriInfo)).build();
 	}
 }
