@@ -11,6 +11,7 @@ import java.net.URI;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -88,7 +89,7 @@ public class ArtikelResource {
 	@POST
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public Response createArtikel(Artikel artikel) {
+	public Response createArtikel(@Valid Artikel artikel) {
 		artikel = as.createArtikel(artikel);
 		return Response.created(getUriArtikel(artikel,uriInfo)).build();
 	}
@@ -97,7 +98,7 @@ public class ArtikelResource {
 	@PUT
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public Response updateArtikel(Artikel artikelID) {
+	public Response updateArtikel(@Valid Artikel artikelID) {
 		// TODO Anwendungskern statt Mock, Verwendung von Locale
 		as.updateArtikel(artikelID);
 		return Response.noContent().links(getTransitionalLinks(artikelID, uriInfo)).build();
