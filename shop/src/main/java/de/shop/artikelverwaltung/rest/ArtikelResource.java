@@ -27,19 +27,18 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 
 import de.shop.artikelverwaltung.domain.Artikel;
-//import de.shop.kundenverwaltung.domain.AbstractKunde;
 import de.shop.artikelverwaltung.service.ArtikelService;
-//import de.shop.util.interceptor.Log;
+import de.shop.util.interceptor.Log;
 import de.shop.util.rest.NotFoundException;
 import de.shop.util.rest.UriHelper;
 
 @Path("/artikel")
 @Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5" })
 @Consumes
-//@Log
+@Log
 public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
-	//private static final String NOT_FOUND_ID = "artikel.notFound.id";
+	private static final String NOT_FOUND_ID = "artikel.notFound.id";
 	
 	@Inject
 	private ArtikelService as;
@@ -65,7 +64,7 @@ public class ArtikelResource {
 	public Response findArtikelById(@PathParam("id") Long id, @Context UriInfo uriInfo) {
 		final Artikel artikel = as.findArtikelById(id);
 		if (artikel == null) {
-			throw new NotFoundException("Der gesuchte Artikel mit der ID: " + id + " gibt es nicht");
+			throw new NotFoundException(NOT_FOUND_ID,id); 
 		}
 
 		return Response.ok(artikel)
