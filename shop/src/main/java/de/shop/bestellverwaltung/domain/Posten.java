@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.net.URI;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -18,7 +17,6 @@ public class Posten implements Serializable {
 
 	private Long id;
 	
-	//@NotNull(message = "{bestellverwaltung.posten.artikel.notNull}")
 	@XmlTransient
 	private Artikel artikel;
 	

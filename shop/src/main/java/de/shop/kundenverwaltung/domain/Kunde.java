@@ -18,7 +18,7 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 public class Kunde implements Serializable {
 	private static final long serialVersionUID = -8477316271106761155L;
 	
-	private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF]+";
+	private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z0-9+-_\u00E4\u00F6\u00FC\u00DF]+";
 	private static final String EMAIL_PATTERN = "[\\w.%-]+@[\\w.%-]+\\.[A-Za-z]{2,4}";
     private static final String PREFIX_ADEL = "(o'|von|von der|von und zu|van)?";
 

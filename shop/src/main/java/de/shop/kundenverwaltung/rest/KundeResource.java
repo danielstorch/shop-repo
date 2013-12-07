@@ -14,6 +14,7 @@ import static javax.ws.rs.core.MediaType.TEXT_XML;
 import java.net.URI;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -37,12 +38,15 @@ import de.shop.bestellverwaltung.rest.BestellungResource;
 import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.kundenverwaltung.domain.Kunde;
 import de.shop.kundenverwaltung.service.KundeService;
+import de.shop.util.interceptor.Log;
 import de.shop.util.rest.UriHelper;
 import de.shop.util.rest.NotFoundException;
 
 @Path("/kunden")
 @Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5" })
 @Consumes
+@RequestScoped
+@Log
 public class KundeResource {
 	public static final String KUNDEN_ID_PATH_PARAM = "kundeId";
 	public static final String KUNDEN_NACHNAME_QUERY_PARAM = "nachname";

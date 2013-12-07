@@ -2,6 +2,7 @@ package de.shop.kundenverwaltung.domain;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -10,8 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Adresse implements Serializable {
 	private static final long serialVersionUID = -3029272617931844501L;
 	
-	//private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z\u00E4\u00F6\u00FC\u00DF]";
-	// private static final int PLZ_LENGTH_MAX = 5;
+	private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z0-9+-_\u00E4\u00F6\u00FC\u00DF]+";
 	private static final int ORT_LENGTH_MIN = 2;
 	private static final int ORT_LENGTH_MAX = 32;
 	private static final int STRASSE_LENGTH_MIN = 2;
@@ -26,17 +26,17 @@ public class Adresse implements Serializable {
 	
 	@NotNull(message = "{adresse.ort.notNull}")
 	@Size(min = ORT_LENGTH_MIN, max = ORT_LENGTH_MAX, message = "{adresse.ort.length}")
-	//@Pattern(regexp = NAME_PATTERN, message = "{adresse.ort.pattern}")
+	@Pattern(regexp = NAME_PATTERN, message = "{adresse.ort.pattern}")
 	private String ort;
 	
 	@NotNull(message = "{adresse.strasse.notNull}")
 	@Size(min = STRASSE_LENGTH_MIN, max = STRASSE_LENGTH_MAX, message = "{adresse.strasse.length}")
-	//@Pattern(regexp = NAME_PATTERN, message = "{adresse.strasse.pattern}")
+	@Pattern(regexp = NAME_PATTERN, message = "{adresse.strasse.pattern}")
 	private String strasse;
 	
 	@NotNull(message = "{adresse.hausnr.notNull}")
 	@Size(max = HAUSNR_LENGTH_MAX, message = "{adresse.hausnr.length}")
-	//@Pattern(regexp = NAME_PATTERN, message = "{adresse.hausnr.pattern}")
+	@Min(value = 1, message = "{adresse.hausnr.value}")
 	private String hausnr;
 	
 	@XmlTransient

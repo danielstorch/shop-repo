@@ -132,22 +132,22 @@ public final class Mock {
 		return bestellung;
 	}
 	
-	// Create bestellung (leere klammern im tester)
+	// Create bestellung 
 	public static Bestellung createBestellung(Bestellung bestellung) {
-		//final Kunde kunde = findKundeById(bestellung.getId() + 1);  // andere ID fuer den Kunden
+		final Kunde kunde = findKundeById(bestellung.getId() + 1);  // andere ID fuer den Kunden
 		bestellung.setId(bestellung.getId());
 		bestellung.setAusgeliefert(false);
-		//bestellung.setKunde(kunde);
+		bestellung.setKunde(kunde);
 		final List<Posten> posten = bestellung.getPosten();
 		final List<Posten> finalposten = new ArrayList<>();
-		//Long id = new Long(1);
+		Long id = new Long(1);
 		for (Posten post : posten) {
 			final Posten p = new Posten();
 			p.setAnzahl(post.getAnzahl());
-			p.setArtikel(findArtikelById(post.getId()));
-			p.setId(post.getId());
+			p.setArtikel(findArtikelById(id));
+			p.setId(id);
 			finalposten.add(p);
-			//id++;
+			id++;
 		}
 
 		bestellung.setPosten(finalposten);
