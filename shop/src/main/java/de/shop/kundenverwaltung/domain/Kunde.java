@@ -25,7 +25,7 @@ public class Kunde implements Serializable {
     public static final String NACHNAME_PATTERN = PREFIX_ADEL + NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
     public static final String VORNAME_PATTERN = NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
 
-    public static final int NAME_LENGTH_MIN = 3;
+    public static final int NAME_LENGTH_MIN = 2;
     public static final int NAME_LENGTH_MAX = 32;
     public static final int EMAIL_LENGTH_MAX = 32;
 	

@@ -29,8 +29,8 @@ public final class Mock {
 		
 		final Kunde kunde =  new Kunde();
 		kunde.setId(id);
-		kunde.setNachname("Nachname" + id);
-		kunde.setVorname("Vorname" + id);
+		kunde.setNachname("Nachname");
+		kunde.setVorname("Vorname");
 		kunde.setEmail("" + id + "@hska.de");
 		
 		final Adresse adresse = new Adresse();
