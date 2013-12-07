@@ -15,15 +15,14 @@ public class Posten implements Serializable {
 	private static final long serialVersionUID = -8996268150091727718L;
 
 	private static final int ANZAHL_MIN = 1;
-	
-	@NotNull
+
 	private Long id;
 	
-	@NotNull(message = "{bestellverwaltung.posten.artikel.notNull}")
+	//@NotNull(message = "{bestellverwaltung.posten.artikel.notNull}")
 	@XmlTransient
 	private Artikel artikel;
 	
-	@Min(value = ANZAHL_MIN, message = "{bestellverwaltung.posten.anzahl.min}")
+	@Min(value = ANZAHL_MIN, message = "{posten.anzahl.min}")
 	private int anzahl;
 	
 	private URI artikelURI;

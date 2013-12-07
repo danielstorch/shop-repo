@@ -21,7 +21,6 @@ public class Bestellung implements Serializable {
 	@NotNull
 	private Long id;
 	
-	@NotNull(message = "{bestellverwaltung.bestellung.gesamtpreis.notNull}")
 	private BigDecimal gesamtpreis;
 	
 	private boolean ausgeliefert;

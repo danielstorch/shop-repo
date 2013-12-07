@@ -8,6 +8,7 @@ import static javax.ws.rs.core.MediaType.TEXT_XML;
 import java.net.URI;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -98,7 +99,7 @@ public class BestellungResource {
 	@POST
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public Response createBestellung(Bestellung bestellung) {
+	public Response createBestellung(@Valid Bestellung bestellung) {
 		// TODO Anwendungskern statt Mock, Verwendung von Locale
 		bestellung = Mock.createBestellung(bestellung);
 		setStructuralLinks(bestellung, uriInfo);
