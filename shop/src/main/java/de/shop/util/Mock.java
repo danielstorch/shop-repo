@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.math.BigDecimal;
 
+import javax.validation.Valid;
+
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.kundenverwaltung.domain.Kunde;
 import de.shop.kundenverwaltung.domain.Adresse;
@@ -132,10 +134,25 @@ public final class Mock {
 	
 	// Create bestellung (leere klammern im tester)
 	public static Bestellung createBestellung(Bestellung bestellung) {
-//		// Zufälliger Kunde wird erzeugt mit ID 1
-//		// Die neue bestellung ist immer die erste bestellung von Kunde ID: 1
-		final int id = 1;
-		bestellung = findBestellungById(Long.valueOf(id));
+		//final Kunde kunde = findKundeById(bestellung.getId() + 1);  // andere ID fuer den Kunden
+		bestellung.setId(bestellung.getId());
+		bestellung.setAusgeliefert(false);
+		//bestellung.setKunde(kunde);
+		final List<Posten> posten = bestellung.getPosten();
+		final List<Posten> finalposten = new ArrayList<>();
+		//Long id = new Long(1);
+		for (Posten post : posten) {
+			final Posten p = new Posten();
+			p.setAnzahl(post.getAnzahl());
+			p.setArtikel(findArtikelById(post.getId()));
+			p.setId(post.getId());
+			finalposten.add(p);
+			//id++;
+		}
+
+		bestellung.setPosten(finalposten);
+		bestellung.setGesamtpreis(bestellung.gesamtpreisBerechnung());
+		
 		return bestellung;
 	}
 

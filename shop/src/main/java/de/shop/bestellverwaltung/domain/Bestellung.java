@@ -18,10 +18,8 @@ import de.shop.kundenverwaltung.domain.Kunde;
 public class Bestellung implements Serializable {
 	private static final long serialVersionUID = 1618359234119003714L;
 	
-	@NotNull
 	private Long id;
 	
-	@NotNull(message = "{bestellverwaltung.bestellung.gesamtpreis.notNull}")
 	private BigDecimal gesamtpreis;
 	
 	private boolean ausgeliefert;
