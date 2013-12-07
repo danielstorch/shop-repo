@@ -29,7 +29,6 @@ public class Kunde implements Serializable {
     public static final int NAME_LENGTH_MAX = 32;
     public static final int EMAIL_LENGTH_MAX = 32;
 	
-	@NotNull(message = "{kunde.id.notNull}")
     private Long id;
 	
 	@NotNull(message = "{kunde.nachname.notNull}")
