@@ -1,4 +1,4 @@
-package de.shop.bestellverwaltung.service;
+ package de.shop.bestellverwaltung.service;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;

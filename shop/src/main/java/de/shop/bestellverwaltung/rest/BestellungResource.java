@@ -27,7 +27,6 @@ import de.shop.bestellverwaltung.domain.Posten;
 import de.shop.bestellverwaltung.service.BestellungService;
 import de.shop.kundenverwaltung.domain.Kunde;
 import de.shop.kundenverwaltung.rest.KundeResource;
-import de.shop.util.Mock;
 import de.shop.util.interceptor.Log;
 import de.shop.util.rest.UriHelper;
 import de.shop.util.rest.NotFoundException;
@@ -105,7 +104,7 @@ public class BestellungResource {
 	@Produces
 	public Response createBestellung(@Valid Bestellung bestellung) {
 		// TODO Anwendungskern statt Mock, Verwendung von Locale
-		bestellung = Mock.createBestellung(bestellung);
+		bestellung = bs.createBestellung(bestellung);
 		setStructuralLinks(bestellung, uriInfo);
 		System.out.println("Neue Bestellung: " + bestellung);
 		return Response.created(getUriBestellung(bestellung, uriInfo))

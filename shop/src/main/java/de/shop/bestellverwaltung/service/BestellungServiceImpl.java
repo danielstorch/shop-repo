@@ -3,6 +3,8 @@ package de.shop.bestellverwaltung.service;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.validation.constraints.Size;
 
 import de.shop.bestellverwaltung.domain.Bestellung;
@@ -12,6 +14,9 @@ import de.shop.util.Mock;
 public class BestellungServiceImpl implements BestellungService, Serializable {
 	private static final long serialVersionUID = -904844601529273628L;
 	
+	@Inject
+	@NeueBestellung
+	private transient Event<Bestellung> event;
 	
 	@Override
 	public Bestellung findBestellungById(Long id) {
@@ -37,7 +42,7 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 		// TODO Datenbanzugriffsschicht statt Mock
 		bestellung = Mock.createBestellung(bestellung);
 		//für email
-		//event.fire(bestellung);
+		event.fire(bestellung);
 		
 		return bestellung;
 	}
