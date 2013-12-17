@@ -3,7 +3,14 @@ package de.shop.artikelverwaltung.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 //import javax.validation.constraints.Pattern;
@@ -11,6 +18,8 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
+@Entity
+@Table(indexes = @Index(columnList = "bezeichnung"))
 public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1472129607838538329L;
 	
@@ -18,10 +27,15 @@ public class Artikel implements Serializable {
 	private static final int BEZEICHNUNG_LENGTH_MAX = 32;
 	public static final String BEZEICHNUNG_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z0-9+-_\u00E4\u00F6\u00FC\u00DF]+";
 	
+	@Id
+	@GeneratedValue
+	@Basic(optional = false)
 	private Long id;
+	
 	
 	@NotNull(message = "{artikel.preis.notNull}")
 	@DecimalMin(value = "0.00", message = "{artikel.preis.min}")
+	@Digits(integer = 10, fraction = 2, message = "{artikel.preis.digits}")
 	private BigDecimal preis;
 	
 	@NotNull(message = "{artikel.bezeichnung.notNull}")
