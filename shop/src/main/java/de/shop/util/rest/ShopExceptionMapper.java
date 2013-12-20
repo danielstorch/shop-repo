@@ -12,11 +12,11 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
 
 import de.shop.util.AbstractShopException;
-//import de.shop.util.interceptor.Log;
+import de.shop.util.interceptor.Log;
 
 @Provider
 @ApplicationScoped
-//@Log
+@Log
 public class ShopExceptionMapper implements ExceptionMapper<AbstractShopException> {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	

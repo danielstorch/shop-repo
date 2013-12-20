@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+//import javax.persistence.Temporal;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -17,10 +18,12 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import de.shop.util.persistence.AbstractAuditable;
+
 @XmlRootElement
 @Entity
 @Table(indexes = @Index(columnList = "bezeichnung"))
-public class Artikel implements Serializable {
+public class Artikel extends AbstractAuditable implements Serializable {
 	private static final long serialVersionUID = 1472129607838538329L;
 	
 	private static final int BEZEICHNUNG_LENGTH_MIN = 2;
@@ -43,6 +46,15 @@ public class Artikel implements Serializable {
 	@Pattern(regexp = BEZEICHNUNG_PATTERN, message = "{artikel.bezeichnung.pattern}")
 	private String bezeichnung = "";
 	
+	@Basic(optional = false)
+	private boolean ausgesondert;
+	
+	public boolean isAusgesondert() {
+		return ausgesondert;
+	}
+	public void setAusgesondert(boolean ausgesondert) {
+		this.ausgesondert = ausgesondert;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -66,52 +78,45 @@ public class Artikel implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (ausgesondert ? 1231 : 1237);
 		result = prime * result
 				+ ((bezeichnung == null) ? 0 : bezeichnung.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((preis == null) ? 0 : preis.hashCode());
 		return result;
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		
 		if (obj == null)
 			return false;
-		
 		if (getClass() != obj.getClass())
 			return false;
-		
-		final Artikel other = (Artikel) obj;
+		Artikel other = (Artikel) obj;
+		if (ausgesondert != other.ausgesondert)
+			return false;
 		if (bezeichnung == null) {
-		  if (other.bezeichnung != null)
+			if (other.bezeichnung != null)
+				return false;
+		} else if (!bezeichnung.equals(other.bezeichnung))
 			return false;
-		  }
-		else if (!bezeichnung.equals(other.bezeichnung))
-			return false;
-		
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} 
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
-		
 		if (preis == null) {
 			if (other.preis != null)
 				return false;
-		} 
-		else if (!preis.equals(other.preis))
+		} else if (!preis.equals(other.preis))
 			return false;
-		
 		return true;
 	}
-
 	@Override
 	public String toString() {
-		return "Artikel [id=" + id + ", preis=" + preis + ", bezeichnung="
-				+ bezeichnung + "]";
+		return "Artikel [id= " + id + ", preis= " + preis + ", bezeichnung= "
+				+ bezeichnung + ", ausgesondert= " + ausgesondert + "]";
 	}
+	
 }

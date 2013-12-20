@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMessage;
 import org.jboss.logging.Logger;
 
 
+
 //import de.shop.bestellverwaltung.domain.Bestellposition;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.domain.Posten;
