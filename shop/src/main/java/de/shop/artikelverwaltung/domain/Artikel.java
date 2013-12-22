@@ -1,14 +1,24 @@
 package de.shop.artikelverwaltung.domain;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.PostPersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
 //import javax.persistence.Temporal;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
@@ -17,14 +27,42 @@ import javax.validation.constraints.Pattern;
 //import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import de.shop.util.persistence.AbstractAuditable;
 
 @XmlRootElement
 @Entity
 @Table(indexes = @Index(columnList = "bezeichnung"))
+@NamedQueries({
+	@NamedQuery(name  = Artikel.FIND_VERFUEGBARE_ARTIKEL,
+            	query = "SELECT      a"
+            	        + " FROM     Artikel a"
+						+ " WHERE    a.ausgesondert = FALSE"
+                        + " ORDER BY a.id ASC"),
+	@NamedQuery(name  = Artikel.FIND_ARTIKEL_BY_BEZ,
+            	query = "SELECT      a"
+                        + " FROM     Artikel a"
+						+ " WHERE    a.bezeichnung LIKE :" + Artikel.PARAM_BEZEICHNUNG
+						+ "          AND a.ausgesondert = FALSE"
+			 	        + " ORDER BY a.id ASC"),
+   	@NamedQuery(name  = Artikel.FIND_ARTIKEL_MAX_PREIS,
+            	query = "SELECT      a"
+                        + " FROM     Artikel a"
+						+ " WHERE    a.preis < :" + Artikel.PARAM_PREIS
+			 	        + " ORDER BY a.id ASC")
+})
 public class Artikel extends AbstractAuditable implements Serializable {
 	private static final long serialVersionUID = 1472129607838538329L;
+//	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
+	
+	private static final String PREFIX = "Artikel.";
+	public static final String FIND_VERFUEGBARE_ARTIKEL = PREFIX + "findVerfuegbareArtikel";
+	public static final String FIND_ARTIKEL_BY_BEZ = PREFIX + "findArtikelByBez";
+	public static final String FIND_ARTIKEL_MAX_PREIS = PREFIX + "findArtikelByMaxPreis";
+	
+	public static final String PARAM_BEZEICHNUNG = "bezeichnung";
+	public static final String PARAM_PREIS = "preis";
 	
 	private static final int BEZEICHNUNG_LENGTH_MIN = 2;
 	private static final int BEZEICHNUNG_LENGTH_MAX = 32;
@@ -48,6 +86,21 @@ public class Artikel extends AbstractAuditable implements Serializable {
 	
 	@Basic(optional = false)
 	private boolean ausgesondert;
+	
+//	   @Basic(optional = false)
+//       @Temporal(TIMESTAMP)
+       @Transient
+       private Date erzeugt = super.getErzeugt();
+//
+//       @Basic(optional = false)
+//       @Temporal(TIMESTAMP)
+       @Transient
+       private Date aktualisiert = super.getAktualisiert();
+	
+//	@PostPersist
+//	private void postPersist() {
+//		LOGGER.debugf("Neuer Artikel mit ID=%d", id);
+//	}
 	
 	public boolean isAusgesondert() {
 		return ausgesondert;
@@ -115,8 +168,10 @@ public class Artikel extends AbstractAuditable implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "Artikel [id= " + id + ", preis= " + preis + ", bezeichnung= "
-				+ bezeichnung + ", ausgesondert= " + ausgesondert + "]";
+		return "Artikel [id=" + id + ", preis=" + preis + ", bezeichnung="
+				+ bezeichnung + ", ausgesondert=" + ausgesondert + ", erzeugt=" + erzeugt + ", aktualisiert=" + aktualisiert+"]";
 	}
+
+
 	
 }

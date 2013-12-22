@@ -9,8 +9,7 @@
 				
 		<!-- Caching von Objekten mit @Cacheable -->
 		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
-		<!--
-		-->
+		
 
 		<!-- Umschalten fuer Hibernate Console -->
 		<!--
