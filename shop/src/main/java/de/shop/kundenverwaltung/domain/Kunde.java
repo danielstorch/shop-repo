@@ -61,6 +61,10 @@ import de.shop.util.persistence.AbstractAuditable;
 	            query = "SELECT k"
 				        + " FROM   Kunde k"
 	            		+ " WHERE  UPPER(k.nachname) = UPPER(:" + Kunde.PARAM_KUNDE_NACHNAME + ")"),
+	@NamedQuery(name  = Kunde.FIND_KUNDEN_BY_VORNAME,
+				query = "SELECT k"
+	    		        + " FROM   Kunde k"
+	    	       		+ " WHERE  UPPER(k.vorname) = UPPER(:" + Kunde.PARAM_KUNDE_VORNAME + ")"),
 	@NamedQuery(name  = Kunde.FIND_NACHNAMEN_BY_PREFIX,
    	            query = "SELECT   DISTINCT k.nachname"
 				        + " FROM  Kunde k "
@@ -105,6 +109,7 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	public static final String FIND_KUNDEN_ORDER_BY_ID = PREFIX + "findKundenOrderById";
 	public static final String FIND_IDS_BY_PREFIX = PREFIX + "findIdsByPrefix";
 	public static final String FIND_KUNDEN_BY_NACHNAME = PREFIX + "findKundenByNachname";
+	public static final String FIND_KUNDEN_BY_VORNAME = PREFIX + "findKundenByVorname";
 	public static final String FIND_NACHNAMEN_BY_PREFIX = PREFIX + "findNachnamenByPrefix";
 	public static final String FIND_KUNDE_BY_EMAIL = PREFIX + "findKundeByEmail";
 	public static final String FIND_KUNDEN_BY_PLZ = PREFIX + "findKundenByPlz";
@@ -114,6 +119,7 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	public static final String PARAM_KUNDE_ID = "kundeId";
 	public static final String PARAM_KUNDE_ID_PREFIX = "idPrefix";
 	public static final String PARAM_KUNDE_NACHNAME = "nachname";
+	public static final String PARAM_KUNDE_VORNAME = "vorname";
 	public static final String PARAM_KUNDE_NACHNAME_PREFIX = "nachnamePrefix";
 	public static final String PARAM_KUNDE_ADRESSE_PLZ = "plz";
 	public static final String PARAM_KUNDE_SEIT = "seit";
@@ -143,7 +149,8 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	@Pattern(regexp = EMAIL_PATTERN, message = "{kunde.email.pattern}")
 	private String email;
 	
-	@OneToOne(cascade = {PERSIST, REMOVE}, mappedBy = "kunde")
+//	@OneToOne(cascade = {PERSIST, REMOVE}, mappedBy = "kunde")
+	@OneToOne(mappedBy = "kunde", cascade = PERSIST)
 	@NotNull(message = "{kunde.adresse.notNull}")
 	@Valid
 	private Adresse adresse;

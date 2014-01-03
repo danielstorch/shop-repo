@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,6 +38,7 @@ import de.shop.util.rest.UriHelper;
 @Produces({ APPLICATION_JSON, APPLICATION_XML + ";qs=0.75", TEXT_XML + ";qs=0.5" })
 @Consumes
 @RequestScoped
+@Transactional
 @Log
 public class ArtikelResource {
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
@@ -99,9 +101,8 @@ public class ArtikelResource {
 	@PUT
 	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
 	@Produces
-	public Response updateArtikel(@Valid Artikel artikelID) {
-		// TODO Anwendungskern statt Mock, Verwendung von Locale
-		as.updateArtikel(artikelID);
-		return Response.noContent().links(getTransitionalLinks(artikelID, uriInfo)).build();
+	public Response updateArtikel(@Valid Artikel artikel) {
+		as.updateArtikel(artikel);
+		return Response.noContent().links(getTransitionalLinks(artikel, uriInfo)).build();
 	}
 }

@@ -20,9 +20,10 @@ import javax.persistence.criteria.Predicate;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.util.interceptor.Log;
-import de.shop.util.Mock;
+//import de.shop.util.Mock;
 
 import java.util.Date;
+
 import com.google.common.base.Strings;
 
 @Dependent
@@ -131,12 +132,6 @@ public class ArtikelService implements Serializable {
 				 .getResultList();
 	}
 	
-//	public Artikel findArtikelById(Long id) {
-//		// TODO id pruefen
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		return Mock.findArtikelById(id);
-//	}
-
 
 	
 	public <T extends Artikel> T createArtikel (T artikel) {
@@ -153,22 +148,15 @@ public class ArtikelService implements Serializable {
 		em.persist(artikel);
 		return artikel;
 	}
-//	public Artikel createArtikel(Artikel artikel) {	
-//		return Mock.createArtikel(artikel);
-//	}
 
-	
 	public<T extends Artikel> T updateArtikel(T artikel) {
 		if(artikel == null) {
 			return null;
 		}
 		
+		final Artikel tmp = findArtikelById(artikel.getId());
+		artikel.setErzeugt(tmp.getErzeugt());
 		em.merge(artikel);
 		return artikel;
 	}
-//	public void updateArtikel(Artikel artikel) {
-//		 Mock.updateArtikel(artikel);
-//	}
-	
-	
 }

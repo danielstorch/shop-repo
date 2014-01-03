@@ -24,12 +24,13 @@ import javax.validation.constraints.Size;
 
 import com.google.common.collect.ImmutableMap;
 
+import de.shop.kundenverwaltung.domain.Adresse;
 import de.shop.kundenverwaltung.domain.Kunde;
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.domain.Posten;
 import de.shop.bestellverwaltung.domain.Bestellung_;
 import de.shop.bestellverwaltung.domain.Posten_;
-import de.shop.util.Mock;
+//import de.shop.util.Mock;
 import de.shop.util.interceptor.Log;
 
 @Dependent
@@ -178,6 +179,32 @@ public class KundeService implements Serializable {
 //		return Mock.findKundenByNachname(nachname);
 //	}
 	
+	
+	@Size(min = 1, message = "{kunde.notFound.vorname}")
+	public List<Kunde> findKundenByVorname(String vorname, FetchType fetch) {
+		final TypedQuery<Kunde> query = em.createNamedQuery(Kunde.FIND_KUNDEN_BY_VORNAME,
+				Kunde.class).setParameter(Kunde.PARAM_KUNDE_VORNAME, vorname);
+		
+		EntityGraph<?> entityGraph;
+		switch (fetch) {
+			case NUR_KUNDE:
+				break;
+				
+			case MIT_BESTELLUNGEN:
+				entityGraph = em.getEntityGraph(Kunde.GRAPH_BESTELLUNGEN);
+				query.setHint(LOADGRAPH, entityGraph);
+				break;
+				
+//			case MIT_WARTUNGSVERTRAEGEN:
+//				entityGraph = em.getEntityGraph(AbstractKunde.GRAPH_WARTUNGSVERTRAEGE);
+//				query.setHint(LOADGRAPH, entityGraph);
+//				break;
+				
+			default:
+				break;
+		}
+		return query.getResultList();
+	}
 //	@Size(min = 1, message = "{kunde.notFound.nachname}")
 //	public List<Kunde> findKundenByVorname(String vorname) {
 //		// TODO Datenbanzugriffsschicht statt Mock
@@ -301,6 +328,8 @@ public class KundeService implements Serializable {
 		if (kunde == null) {
 			return kunde;
 		}
+		
+//		em.detach(kunde);
 
 		// Pruefung, ob die Email-Adresse schon existiert
 		final Kunde tmp = findKundeByEmail(kunde.getEmail());   // Kein Aufruf als Business-Methode
@@ -308,20 +337,10 @@ public class KundeService implements Serializable {
 			throw new EmailExistsException(kunde.getEmail());
 		}
 		
+//		kunde.setId(null);
 		em.persist(kunde);
 		return kunde;		
 	}
-//	public Kunde createKunde(Kunde kunde) {
-//		if (kunde == null) {
-//			return kunde;
-//		}
-//
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		kunde = Mock.createKunde(kunde);
-//
-//		return kunde;
-//	}
-	
 	
 	/**
 	 * Einen vorhandenen Kunden aktualisieren
@@ -338,6 +357,7 @@ public class KundeService implements Serializable {
 		
 		// Gibt es ein anderes Objekt mit gleicher Email-Adresse?
 		final Kunde tmp = findKundeByEmail(kunde.getEmail());  // Kein Aufruf als Business-Methode
+//		final Kunde tmp = findKundeById(kunde.getId(), FetchType.NUR_KUNDE);
 		if (tmp != null) {
 			em.detach(tmp);
 			if (tmp.getId().longValue() != kunde.getId().longValue()) {
@@ -349,29 +369,18 @@ public class KundeService implements Serializable {
 		em.merge(kunde);
 		return kunde;
 	}
-//	public Kunde updateKunde(Kunde kunde) {
-//		if (kunde == null) {
-//			return null;
-//		}
-//
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		Mock.updateKunde(kunde);
-//		
-//		return kunde;
-//	}
-	
 	
 	/**
 	 * Einen Kunden aus der DB loeschen, falls er existiert.
 	 * @param kunde Der zu loeschende Kunde.
 	 */
-	public void deleteKunde(Kunde kunde) {
-		if (kunde == null) {
+	public void deleteKunde(Long kundeId) {	//Kunde
+		if (kundeId == null) {
 			return;
 		}
 		
 		// Bestellungen laden, damit sie anschl. ueberprueft werden koennen
-		kunde = findKundeById(kunde.getId(), FetchType.MIT_BESTELLUNGEN);  // Kein Aufruf als Business-Methode
+		final Kunde kunde = findKundeById(kundeId, FetchType.MIT_BESTELLUNGEN);  // Kein Aufruf als Business-Methode //kunde.getId()
 		if (kunde == null) {
 			return;
 		}

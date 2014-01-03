@@ -9,6 +9,8 @@ import java.net.URI;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
+
 import static de.shop.util.Constants.KEINE_ID;
 
 import org.jboss.logging.Logger;
@@ -87,7 +89,7 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 	@JoinColumn(name = "bestellung_fk", nullable = false)
 	@NotEmpty(message = "{bestellverwaltung.bestellung.posten.notEmpty}")
 	@Valid
-	private List<Posten> posten;
+	private Set<Posten> posten;
 	
 	@ManyToOne
 	@JoinColumn(name = "kunde_fk", nullable = false, insertable = false, updatable = false)
@@ -132,11 +134,21 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 	public void setGesamtpreis(BigDecimal gesamtpreis) {
 		this.gesamtpreis = gesamtpreis;
 	}
-	public List<Posten> getPosten() {
+	public Set<Posten> getPosten() {
 		return posten;
 	}
-	public void setPosten(List<Posten> posten) {
-		this.posten = posten;
+	public void setPosten(Set<Posten> neueBestellpositionen) {
+//		this.posten = posten;
+		if (this.posten == null) {
+			this.posten = neueBestellpositionen;
+			return;
+		}
+		
+		// Wiederverwendung der vorhandenen Collection
+		this.posten.clear();
+		if (neueBestellpositionen != null) {
+			this.posten.addAll(neueBestellpositionen);
+		}
 	}
 	
 	
@@ -186,6 +198,7 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 				+ ", ausgeliefert=" + ausgeliefert + ", posten=" + posten
 				+ ", kundeUri=" + kundeUri + "]";
 	}
+	
 	//Rechnet den gesamtpreis aus aller posten
 	public BigDecimal gesamtpreisBerechnung() {
 		BigDecimal gp = new BigDecimal(0.0);

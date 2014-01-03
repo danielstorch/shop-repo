@@ -153,7 +153,7 @@ public class Adresse extends AbstractAuditable implements Serializable {
 	@Override
 	public String toString() {
 		return "Adresse [id=" + id + ", plz=" + plz + ", ort=" + ort
-				+ ", strasse=" + strasse + ", hausnr=" + hausnr + "]";
+				+ ", strasse=" + strasse + ", hausnr=" + hausnr + super.toString() + "]";
 	}
 	
 }

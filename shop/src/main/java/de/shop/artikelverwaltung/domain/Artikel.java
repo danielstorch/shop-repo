@@ -3,9 +3,7 @@ package de.shop.artikelverwaltung.domain;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.persistence.Basic;
@@ -15,19 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.PostPersist;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.Transient;
-//import javax.persistence.Temporal;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 //import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import de.shop.util.persistence.AbstractAuditable;
 
@@ -81,21 +73,18 @@ public class Artikel extends AbstractAuditable implements Serializable {
 	
 	@NotNull(message = "{artikel.bezeichnung.notNull}")
 	@Size(min = BEZEICHNUNG_LENGTH_MIN, max = BEZEICHNUNG_LENGTH_MAX, message = "{artikel.bezeichnung.length}")
-	@Pattern(regexp = BEZEICHNUNG_PATTERN, message = "{artikel.bezeichnung.pattern}")
+//	@Pattern(regexp = BEZEICHNUNG_PATTERN, message = "{artikel.bezeichnung.pattern}")
 	private String bezeichnung = "";
 	
 	@Basic(optional = false)
 	private boolean ausgesondert;
 	
-//	   @Basic(optional = false)
-//       @Temporal(TIMESTAMP)
-       @Transient
-       private Date erzeugt = super.getErzeugt();
+
+//       @Transient
+//       private Date erzeugt = super.getErzeugt();
 //
-//       @Basic(optional = false)
-//       @Temporal(TIMESTAMP)
-       @Transient
-       private Date aktualisiert = super.getAktualisiert();
+//       @Transient
+//       private Date aktualisiert = super.getAktualisiert();
 	
 //	@PostPersist
 //	private void postPersist() {
@@ -169,9 +158,6 @@ public class Artikel extends AbstractAuditable implements Serializable {
 	@Override
 	public String toString() {
 		return "Artikel [id=" + id + ", preis=" + preis + ", bezeichnung="
-				+ bezeichnung + ", ausgesondert=" + ausgesondert + ", erzeugt=" + erzeugt + ", aktualisiert=" + aktualisiert+"]";
-	}
-
-
-	
+				+ bezeichnung + ", ausgesondert=" + ausgesondert +", " + super.toString() +"]";
+	}	
 }
