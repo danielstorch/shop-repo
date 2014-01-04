@@ -16,6 +16,7 @@ public class ArtikelService implements Serializable {
 	public Artikel findArtikelById(Long id) {
 		// TODO id pruefen
 		// TODO Datenbanzugriffsschicht statt Mock
+		System.out.println("test");
 		return Mock.findArtikelById(id);
 	}
 	
