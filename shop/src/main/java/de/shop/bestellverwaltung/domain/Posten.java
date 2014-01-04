@@ -3,26 +3,59 @@ package de.shop.bestellverwaltung.domain;
 import java.io.Serializable;
 import java.net.URI;
 
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Index;
+import javax.persistence.Transient;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import de.shop.artikelverwaltung.domain.Artikel;
+import de.shop.util.persistence.AbstractAuditable;
 
+@Entity
+@Table(indexes = {
+		@Index(columnList = "bestellung_fk"),
+		@Index(columnList = "artikel_fk" )
+})
+@NamedQueries({
+    @NamedQuery(name  = Posten.FIND_LADENHUETER,
+   	            query = "SELECT a"
+   	            	    + " FROM   Artikel a"
+   	            	    + " WHERE  a NOT IN (SELECT bp.artikel FROM Posten bp)")
+})
 @XmlRootElement
-public class Posten implements Serializable {
+public class Posten extends AbstractAuditable implements Serializable {
 	private static final long serialVersionUID = -8996268150091727718L;
+	
+	private static final String PREFIX = "Posten.";
+	public static final String FIND_LADENHUETER = PREFIX + "findLadenhueter";
 
 	private static final int ANZAHL_MIN = 1;
 
+	@Id
+	@GeneratedValue
+	@Basic(optional = false)
 	private Long id;
 	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "artikel_fk", nullable = false)
 	@XmlTransient
 	private Artikel artikel;
 	
+	@Basic(optional = false)
 	@Min(value = ANZAHL_MIN, message = "{posten.anzahl.min}")
 	private int anzahl;
 	
+	@Transient
 	private URI artikelURI;
 	
 	public Artikel getArtikel() {
@@ -56,12 +89,9 @@ public class Posten implements Serializable {
 		int result = 1;
 		result = prime * result + anzahl;
 		result = prime * result + ((artikel == null) ? 0 : artikel.hashCode());
-		result = prime * result
-				+ ((artikelURI == null) ? 0 : artikelURI.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -70,34 +100,21 @@ public class Posten implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Posten other = (Posten) obj;
+		Posten other = (Posten) obj;
 		if (anzahl != other.anzahl)
 			return false;
-		
 		if (artikel == null) {
 			if (other.artikel != null)
 				return false;
-		}
-		else if (!artikel.equals(other.artikel))
+		} else if (!artikel.equals(other.artikel))
 			return false;
-		
-		if (artikelURI == null) {
-			if (other.artikelURI != null)
-				return false;
-		}
-		else if (!artikelURI.equals(other.artikelURI))
-			return false;
-		
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		}
-		else if (!id.equals(other.id))
+		} else if (!id.equals(other.id))
 			return false;
-		
 		return true;
 	}
-	
 	@Override
 	public String toString() {
 		return "Posten [id=" + id + ", anzahl=" + anzahl + ", artikelURI="
