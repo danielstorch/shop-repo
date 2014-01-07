@@ -1,2 +1,4 @@
 /target
-/shop-ds.xml
+/src/main/webapp/WEB-INF/shop-ds.xml
+/src/main/resources/sql
+
