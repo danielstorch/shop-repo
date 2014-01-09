@@ -199,19 +199,7 @@ public class BestellungResource {
 		final URI bestellungUri = getUriBestellung(bestellung, uriInfo);
 		return Response.created(bestellungUri).build();
 	}
-	// Erzeugt neue Bestellungen für Kunde.....
-//	@POST
-//	@Consumes({APPLICATION_JSON, APPLICATION_XML, TEXT_XML })
-//	@Produces
-//	public Response createBestellung(@Valid Bestellung bestellung, @Valid Long kundeId) {
-//		// TODO Anwendungskern statt Mock, Verwendung von Locale
-//		bestellung = bs.createBestellung(bestellung, kundeId);
-//		setStructuralLinks(bestellung, uriInfo);
-//		System.out.println("Neue Bestellung: " + bestellung);
-//		return Response.created(getUriBestellung(bestellung, uriInfo))
-//			           .build();
-//	}
-	
+
 	@GET
     @Path("{id:[1-9][0-9]*}/kunde")
     public Response findKundeByBestellungId(@PathParam("id") Long id) {

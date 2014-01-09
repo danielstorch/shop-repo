@@ -15,7 +15,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -24,13 +23,9 @@ import javax.validation.constraints.Size;
 
 import com.google.common.collect.ImmutableMap;
 
-import de.shop.kundenverwaltung.domain.Adresse;
+import de.shop.kundenverwaltung.domain.Adresse_;
 import de.shop.kundenverwaltung.domain.Kunde;
-import de.shop.bestellverwaltung.domain.Bestellung;
-import de.shop.bestellverwaltung.domain.Posten;
-import de.shop.bestellverwaltung.domain.Bestellung_;
-import de.shop.bestellverwaltung.domain.Posten_;
-//import de.shop.util.Mock;
+import de.shop.kundenverwaltung.domain.Kunde_;
 import de.shop.util.interceptor.Log;
 
 @Dependent
@@ -40,8 +35,7 @@ public class KundeService implements Serializable {
 	
 	public enum FetchType {
 		NUR_KUNDE,
-		MIT_BESTELLUNGEN,
-		MIT_WARTUNGSVERTRAEGEN
+		MIT_BESTELLUNGEN
 	}
 	
 	public enum OrderType {
@@ -52,7 +46,13 @@ public class KundeService implements Serializable {
 	@Inject
 	private transient EntityManager em;
 	
-	
+	/**
+	 * Suche einen Kunden zu gegebener ID.
+	 * @param id Die gegebene ID.
+	 * @param fetch Angabe, welche Objekte aus der DB mitgeladen werden sollen, z.B. Bestellungen.
+	 * @return Der gefundene Kunde.
+	 * @exception ConstraintViolationException zu @NotNull, falls kein Kunde gefunden wurde
+	 */
 	@NotNull(message = "{kunde.notFound.id}")
 	public Kunde findKundeById(Long id, FetchType fetch) {
 		if (id == null) {
@@ -72,12 +72,6 @@ public class KundeService implements Serializable {
 				props = ImmutableMap.of(LOADGRAPH, (Object) entityGraph);
 				kunde = em.find(Kunde.class, id, props);
 				break;
-				
-//			case MIT_WARTUNGSVERTRAEGEN:
-//				entityGraph = em.getEntityGraph(AbstractKunde.GRAPH_WARTUNGSVERTRAEGE);
-//				props = ImmutableMap.of(LOADGRAPH, (Object) entityGraph);
-//				kunde = em.find(AbstractKunde.class, id, props);
-//				break;
 
 			default:
 				kunde = em.find(Kunde.class, id);
@@ -86,23 +80,24 @@ public class KundeService implements Serializable {
 		
 		return kunde;
 	}
-//	@NotNull(message = "{kunde.notFound.id}")
-//	public Kunde findKundeById(Long id) {
-//		if (id == null) {
-//			return null;
-//		}
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		return Mock.findKundeById(id);
-//	}
-	
-	
+		
+	/**
+     * Suche nach IDs mit gleichem Praefix.
+     * @param idPrefix Der gemeinsame Praefix.
+     * @return Liste der passenden Praefixe.
+     */
 	public List<Long> findIdsByPrefix(String idPrefix) {
 		return em.createNamedQuery(Kunde.FIND_IDS_BY_PREFIX, Long.class)
 				 .setParameter(Kunde.PARAM_KUNDE_ID_PREFIX, idPrefix + '%')
 				 .getResultList();
 	}
 	
-	
+	/**
+     * Suche einen Kunden zu gegebener Email-Adresse.
+     * @param email Die gegebene Email-Adresse.
+     * @return Der gefundene Kunde.
+     * @exception ConstraintViolationException zu @NotNull, falls kein Kunde gefunden wurde
+     */
 	@NotNull(message = "{kunde.notFound.email}")
 	public Kunde findKundeByEmail(String email) {
 		try {
@@ -115,7 +110,12 @@ public class KundeService implements Serializable {
 		}
 	}
 	
-	
+	/**
+	 * Suche alle Kunden.
+	 * @param fetch Angabe, welche Objekte aus der DB mitgeladen werden sollen, z.B. Bestellungen.
+	 * @param order Sortierreihenfolge, z.B. noch ID
+	 * @return Liste der Kunden
+	 */
 	public List<Kunde> findAllKunden(FetchType fetch, OrderType order) {
 		final TypedQuery<Kunde> query = OrderType.ID.equals(order)
 		                                        ? em.createNamedQuery(Kunde.FIND_KUNDEN_ORDER_BY_ID,
@@ -132,26 +132,23 @@ public class KundeService implements Serializable {
 				query.setHint(LOADGRAPH, entityGraph);
 				break;
 				
-//			case MIT_WARTUNGSVERTRAEGEN:
-//				entityGraph = em.getEntityGraph(Kunde.GRAPH_WARTUNGSVERTRAEGE);
-//				query.setHint(LOADGRAPH, entityGraph);
-//				break;
-
 			default:
 				break;
 		}
 		return query.getResultList();
 	}
-//	public List<Kunde> findAllKunden() {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		return Mock.findAllKunden();
-//	}
-
 	
+	 /**
+     * Suche alle Nachnamen mit gleichem Praefix
+     * @param nachnamePrefix Der gemeinsame Praefix
+     * @Param fetch Angabe, welche Objekte aus der DB mitgeladen werden sollen, z.B. Bestellungen.
+     * @return Liste der passenden Nachnamen
+     * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
+     */
 	@Size(min = 1, message = "{kunde.notFound.nachname}")
 	public List<Kunde> findKundenByNachname(String nachname, FetchType fetch) {
-		final TypedQuery<Kunde> query = em.createNamedQuery(Kunde.FIND_KUNDEN_BY_NACHNAME,
-				Kunde.class).setParameter(Kunde.PARAM_KUNDE_NACHNAME, nachname);
+		final TypedQuery<Kunde> query = em.createNamedQuery(Kunde.FIND_KUNDEN_BY_NACHNAME, Kunde.class)
+										  .setParameter(Kunde.PARAM_KUNDE_NACHNAME, nachname);
 		
 		EntityGraph<?> entityGraph;
 		switch (fetch) {
@@ -163,61 +160,29 @@ public class KundeService implements Serializable {
 				query.setHint(LOADGRAPH, entityGraph);
 				break;
 				
-//			case MIT_WARTUNGSVERTRAEGEN:
-//				entityGraph = em.getEntityGraph(AbstractKunde.GRAPH_WARTUNGSVERTRAEGE);
-//				query.setHint(LOADGRAPH, entityGraph);
-//				break;
-				
 			default:
 				break;
 		}
 		return query.getResultList();
 	}
-//	@Size(min = 1, message = "{kunde.notFound.nachname}")
-//	public List<Kunde> findKundenByNachname(String nachname) {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		return Mock.findKundenByNachname(nachname);
-//	}
 	
-	
-	@Size(min = 1, message = "{kunde.notFound.vorname}")
-	public List<Kunde> findKundenByVorname(String vorname, FetchType fetch) {
-		final TypedQuery<Kunde> query = em.createNamedQuery(Kunde.FIND_KUNDEN_BY_VORNAME,
-				Kunde.class).setParameter(Kunde.PARAM_KUNDE_VORNAME, vorname);
-		
-		EntityGraph<?> entityGraph;
-		switch (fetch) {
-			case NUR_KUNDE:
-				break;
-				
-			case MIT_BESTELLUNGEN:
-				entityGraph = em.getEntityGraph(Kunde.GRAPH_BESTELLUNGEN);
-				query.setHint(LOADGRAPH, entityGraph);
-				break;
-				
-//			case MIT_WARTUNGSVERTRAEGEN:
-//				entityGraph = em.getEntityGraph(AbstractKunde.GRAPH_WARTUNGSVERTRAEGE);
-//				query.setHint(LOADGRAPH, entityGraph);
-//				break;
-				
-			default:
-				break;
-		}
-		return query.getResultList();
-	}
-//	@Size(min = 1, message = "{kunde.notFound.nachname}")
-//	public List<Kunde> findKundenByVorname(String vorname) {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		return Mock.findKundenByNachname(vorname);
-//	}
-	
+	 /**
+     * Suche alle Nachnamen mit gleichem Praefix
+     * @param nachnamePrefix Der gemeinsame Praefix
+     * @return Liste der passenden Nachnamen
+     */	
 	public List<String> findNachnamenByPrefix(String nachnamePrefix) {
 		return em.createNamedQuery(Kunde.FIND_NACHNAMEN_BY_PREFIX, String.class)
 				 .setParameter(Kunde.PARAM_KUNDE_NACHNAME_PREFIX, nachnamePrefix + '%')
 				 .getResultList();
 	}
 	
-	
+	/**
+     * Die Kunden mit gleicher Postleitzahl suchen.
+     * @param plz Die Postleitzahl
+     * @return Liste der passenden Kunden.
+     * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
+     */
 	@Size(min = 1, message = "{kunde.notFound.plz}")
 	public List<Kunde> findKundenByPLZ(String plz) {
 		return em.createNamedQuery(Kunde.FIND_KUNDEN_BY_PLZ, Kunde.class)
@@ -225,15 +190,33 @@ public class KundeService implements Serializable {
                  .getResultList();
 	}
 	
+	/**
+     * Diejenigen Kunden suchen, die seit einem bestimmten Datum registriert sind.
+     * @param seit Das zu vergleichende Datum
+     * @return Die Liste der passenden Kunden
+     * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
+     */
+    @Size(min = 1, message = "{kunde.notFound.seit}")
+    public List<Kunde> findKundenBySeit(Date seit) {
+            return em.createNamedQuery(Kunde.FIND_KUNDEN_BY_DATE, Kunde.class)
+             .setParameter(Kunde.PARAM_KUNDE_SEIT, seit)
+             .getResultList();
+    }
 	
+    /**
+     * Kunden mit gleichem Nachnamen durch eine Criteria-Query suchen.
+     * @param nachname Der gemeinsame Nachname.
+     * @return Liste der passenden Kunden
+     * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
+     */
 	@Size(min = 1, message = "{kunde.notFound.nachname}")
 	public List<Kunde> findKundenByNachnameCriteria(String nachname) {
 		final CriteriaBuilder builder = em.getCriteriaBuilder();
 		final CriteriaQuery<Kunde> criteriaQuery = builder.createQuery(Kunde.class);
 		final Root<Kunde> k = criteriaQuery.from(Kunde.class);
 
-//		final Path<String> nachnamePath = k.get(Kunde.nachname);
-		final Path<String> nachnamePath = k.get("nachname");
+		final Path<String> nachnamePath = k.get(Kunde_.nachname);
+	//	final Path<String> nachnamePath = k.get("nachname");
 		
 		final Predicate pred = builder.equal(nachnamePath, nachname);
 		criteriaQuery.where(pred);
@@ -243,81 +226,50 @@ public class KundeService implements Serializable {
 		return em.createQuery(criteriaQuery).getResultList();
 	}
 	
-	
-	/**
-	 * Die Kunden mit einer bestimmten Mindestbestellmenge suchen.
-	 * @param minMenge Die Mindestbestellmenge
-	 * @return Liste der passenden Kunden
-	 * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
-	 *///syntax error
-//	@Size(min = 1, message = "{kunde.notFound.minBestMenge}")
-//	public List<Kunde> findKundenMitMinBestMenge(short minMenge) {
-//		final CriteriaBuilder builder = em.getCriteriaBuilder();
-//		final CriteriaQuery<Kunde> criteriaQuery  = builder.createQuery(Kunde.class);
-//		final Root<Kunde> k = criteriaQuery.from(Kunde.class);
-//
-//		final Join<Kunde, Bestellung> b = k.join(Kunde.bestellungen);
-//		final Join<Bestellung, Posten> bp = b.join(Bestellung_.posten);
-//		criteriaQuery.where(builder.gt(bp.<Short>get(Posten.anzahl), minMenge))
-//		             .distinct(true);
-//		
-//		return em.createQuery(criteriaQuery)
-//		         .getResultList();
-//	}
-	
-	
 	/**
 	 * Kunden zu den Suchkriterien suchen
 	 * @param email Email-Adresse
 	 * @param nachname Nachname
 	 * @param plz Postleitzahl
-	 * @param minBestMenge Mindestbestellmenge
 	 * @return Die gefundenen Kunden
 	 * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
 	 */
-//	@NotNull(message = "{kunde.notFound.criteria}")
-//	public List<Kunde> findKundenByCriteria(String email, String nachname, String plz, Short minBestMenge) {
-//		// SELECT DISTINCT k
-//		// FROM   AbstractKunde k
-//		// WHERE  email = ? AND nachname = ? AND k.adresse.plz = ? and seit = ?
-//		
-//		final CriteriaBuilder builder = em.getCriteriaBuilder();
-//		final CriteriaQuery<Kunde> criteriaQuery  = builder.createQuery(Kunde.class);
-//		final Root<? extends Kunde> k = criteriaQuery.from(Kunde.class);
-//		
-//		Predicate pred = null;
-//		if (email != null) {
-//			final Path<String> emailPath = k.get(Kunde.email);
-//			pred = builder.equal(emailPath, email);
-//		}
-//		if (nachname != null) {
-//			final Path<String> nachnamePath = k.get(Kunde.nachname);
-//			final Predicate tmpPred = builder.equal(nachnamePath, nachname);
-//			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
-//		}
-//		if (plz != null) {
-//			final Path<String> plzPath = k.get(AbstractKunde_.adresse)
-//                                          .get(Adresse_.plz);
-//			final Predicate tmpPred = builder.equal(plzPath, plz);
-//			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
-//		}
-//		if (seit != null) {
-//			final Path<Date> seitPath = k.get(AbstractKunde_.seit);
-//			final Predicate tmpPred = builder.equal(seitPath, seit);
-//			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
-//		}
-//		if (minBestMenge != null) {
-//			final Path<Short> anzahlPath = k.join(AbstractKunde_.bestellungen)
-//                                            .join(Bestellung_.bestellpositionen)
-//                                            .get(Bestellposition_.anzahl);
-//			final Predicate tmpPred = builder.gt(anzahlPath, minBestMenge);
-//			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
-//		}
-//		
-//		criteriaQuery.where(pred)
-//		             .distinct(true);
-//		return em.createQuery(criteriaQuery).getResultList();
-//	}
+	@NotNull(message = "{kunde.notFound.criteria}")
+	public List<Kunde> findKundenByCriteria(String email, String nachname, String plz, Date seit) {
+		// SELECT DISTINCT k
+		// FROM   AbstractKunde k
+		// WHERE  email = ? AND nachname = ? AND k.adresse.plz = ? and seit = ?
+		
+		final CriteriaBuilder builder = em.getCriteriaBuilder();
+		final CriteriaQuery<Kunde> criteriaQuery  = builder.createQuery(Kunde.class);
+		final Root<? extends Kunde> k = criteriaQuery.from(Kunde.class);
+		
+		Predicate pred = null;
+		if (email != null) {
+			final Path<String> emailPath = k.get(Kunde_.email);
+			pred = builder.equal(emailPath, email);
+		}
+		if (nachname != null) {
+			final Path<String> nachnamePath = k.get(Kunde_.nachname);
+			final Predicate tmpPred = builder.equal(nachnamePath, nachname);
+			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
+		}
+		if (plz != null) {
+			final Path<String> plzPath = k.get(Kunde_.adresse)
+                                          .get(Adresse_.plz);
+			final Predicate tmpPred = builder.equal(plzPath, plz);
+			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
+		}
+		if (seit != null) {
+			final Path<Date> seitPath = k.get(Kunde_.seit);
+			final Predicate tmpPred = builder.equal(seitPath, seit);
+			pred = pred == null ? tmpPred : builder.and(pred, tmpPred);
+		}
+		
+		criteriaQuery.where(pred)
+		             .distinct(true);
+		return em.createQuery(criteriaQuery).getResultList();
+	}
 	
 	/**
 	 * Einen neuen Kunden in der DB anlegen.
@@ -328,8 +280,6 @@ public class KundeService implements Serializable {
 		if (kunde == null) {
 			return kunde;
 		}
-		
-//		em.detach(kunde);
 
 		// Pruefung, ob die Email-Adresse schon existiert
 		final Kunde tmp = findKundeByEmail(kunde.getEmail());   // Kein Aufruf als Business-Methode
@@ -337,7 +287,6 @@ public class KundeService implements Serializable {
 			throw new EmailExistsException(kunde.getEmail());
 		}
 		
-//		kunde.setId(null);
 		em.persist(kunde);
 		return kunde;		
 	}
@@ -351,13 +300,11 @@ public class KundeService implements Serializable {
 		if (kunde == null) {
 			return null;
 		}
-		
 		// kunde vom EntityManager trennen, weil anschliessend z.B. nach Id und Email gesucht wird
 		em.detach(kunde);
 		
 		// Gibt es ein anderes Objekt mit gleicher Email-Adresse?
 		final Kunde tmp = findKundeByEmail(kunde.getEmail());  // Kein Aufruf als Business-Methode
-//		final Kunde tmp = findKundeById(kunde.getId(), FetchType.NUR_KUNDE);
 		if (tmp != null) {
 			em.detach(tmp);
 			if (tmp.getId().longValue() != kunde.getId().longValue()) {
@@ -374,13 +321,13 @@ public class KundeService implements Serializable {
 	 * Einen Kunden aus der DB loeschen, falls er existiert.
 	 * @param kunde Der zu loeschende Kunde.
 	 */
-	public void deleteKunde(Long kundeId) {	//Kunde
-		if (kundeId == null) {
+	public void deleteKunde(Kunde kunde) {
+		if (kunde == null) {
 			return;
 		}
 		
 		// Bestellungen laden, damit sie anschl. ueberprueft werden koennen
-		final Kunde kunde = findKundeById(kundeId, FetchType.MIT_BESTELLUNGEN);  // Kein Aufruf als Business-Methode //kunde.getId()
+		kunde = findKundeById(kunde.getId(), FetchType.MIT_BESTELLUNGEN);  // Kein Aufruf als Business-Methode //kunde.getId()
 		if (kunde == null) {
 			return;
 		}
@@ -389,16 +336,7 @@ public class KundeService implements Serializable {
 		if (!kunde.getBestellungen().isEmpty()) {
 			throw new KundeDeleteBestellungException(kunde);
 		}
+		
 		em.remove(kunde);
 	}
-//	public void deleteKunde(Long kundeId) {
-//		final Kunde kunde = findKundeById(kundeId);  // Kein Aufruf als Business-Methode
-//		if (kunde == null) {
-//			return;
-//		}
-//		
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		Mock.deleteKunde(kundeId);
-//	}
-	
 }

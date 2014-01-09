@@ -7,8 +7,8 @@
 --
 -- hibernate_sequence
 --
---DROP SEQUENCE hibernate_sequence;
---CREATE SEQUENCE hibernate_sequence START WITH 5000;
+DROP SEQUENCE hibernate_sequence;
+CREATE SEQUENCE hibernate_sequence START WITH 5000;
 
 --
 -- Check-Constraints fuer Enums

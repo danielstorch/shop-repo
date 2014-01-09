@@ -4,16 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static de.shop.util.Constants.KEINE_ID;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,7 +26,6 @@ import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.bestellverwaltung.domain.Posten;
 import de.shop.kundenverwaltung.domain.Kunde;
 import de.shop.kundenverwaltung.service.KundeService;
-//import de.shop.util.Mock;
 import de.shop.util.interceptor.Log;
 
 @Dependent
@@ -47,6 +43,10 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 	@NeueBestellung
 	private transient Event<Bestellung> event;
 	
+	/**
+	 * {inheritDoc}
+	 * @exception ConstraintViolationException zu @NotNull, falls keine Bestellung gefunden wurde
+	 */
 	@Override
 	@NotNull(message = "{bestellung.notFound.id}")
 	public Bestellung findBestellungById(Long id, FetchType fetch) {
@@ -54,34 +54,26 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 			return null;
 		}
 		
-		Bestellung bestellung;
-		EntityGraph<?> entityGraph;
-		Map<String, Object> props;
-		switch (fetch) {
-			case NUR_BESTELLUNG:
-				bestellung = em.find(Bestellung.class, id);
-				break;
-				
-//			case MIT_LIEFERUNGEN:
-//				entityGraph = em.getEntityGraph(Bestellung.GRAPH_LIEFERUNGEN);
-//				props = ImmutableMap.of(LOADGRAPH, (Object) entityGraph);
-//				bestellung = em.find(Bestellung.class, id, props);
+		Bestellung bestellung =em.find(Bestellung.class, id);
+//		EntityGraph<?> entityGraph;
+//		Map<String, Object> props;
+//		switch (fetch) {
+//			case NUR_BESTELLUNG:
+//				bestellung = em.find(Bestellung.class, id);
 //				break;
-				
-			default:
-				bestellung = em.find(Bestellung.class, id);
-				break;
-		}
+//				
+//			default:
+//				bestellung = em.find(Bestellung.class, id);
+//				break;
+//		}
 		
 		return bestellung;
 	}
-//	@Override
-//	public Bestellung findBestellungById(Long id) {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//        return Mock.findBestellungById(id);
-//	}
 	
-	
+	/**
+	 * {inheritDoc}
+	 * @exception ConstraintViolationException zu @NotNull, falls kein Kunde gefunden wurde
+	 */
 	@Override
 	@NotNull(message = "{bestellung.kunde.notFound.id}")
 	public Kunde findKundeById(Long id) {
@@ -94,13 +86,11 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 			return null;
 		}
 	}
-//	@Override
-//	public Kunde findKundeByBestellungId(Long id) {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//        return Mock.findKundeByBestellungId(id);
-//	}
 	
-	
+	/**
+	 * {inheritDoc}
+	 * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
+	 */
 	@Override
 	@Size(min = 1, message = "{bestellung.notFound.kunde}")
 	public List<Bestellung> findBestellungenByKunde(Kunde kunde) {
@@ -111,13 +101,11 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
                  .setParameter(Bestellung.PARAM_KUNDE, kunde)
 				 .getResultList();
 	}
-//	@Override
-//	@Size(min = 1, message = "{bestellung.notFound.kunde}")
-//	public List<Bestellung> findBestellungenByKunde(Kunde kunde) {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		return Mock.findBestellungenByKunde(kunde);
-//	}
 	
+	/**
+	 * {inheritDoc}
+	 * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
+	 */
 	@Override
 	@Size(min = 1, message = "{bestellung.notFound.ids}")
 	public List<Bestellung> findBestellungenByIds(List<Long> ids, FetchType fetch) {
@@ -154,7 +142,11 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 		return query.getResultList();
 	}
 	
-	
+	/**
+	 * Zuordnung einer neuen, transienten Bestellung zu einem existierenden, persistenten Kunden.
+	 * Der Kunde ist fuer den EntityManager bekannt, die Bestellung dagegen nicht. Das Zusammenbauen
+	 * wird sowohl fuer einen Web Service aus auch fuer eine Webanwendung benoetigt.
+	 */
 	@Override
 	public Bestellung createBestellung(Bestellung bestellung, Long kundeId) {
 		if (bestellung == null) {
@@ -166,6 +158,11 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 		return createBestellung(bestellung, kunde);
 	}
 	
+	/**
+	 * Zuordnung einer neuen, transienten Bestellung zu einem existierenden, persistenten Kunden.
+	 * Der Kunde ist fuer den EntityManager bekannt, die Bestellung dagegen nicht. Das Zusammenbauen
+	 * wird sowohl fuer einen Web Service aus auch fuer eine Webanwendung benoetigt.
+	 */
 	@Override
 	public Bestellung createBestellung(Bestellung bestellung, Kunde kunde) {
 		if (bestellung == null) {
@@ -194,17 +191,10 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 
 		return bestellung;
 	}
-//	@Override
-//	public Bestellung createBestellung(Bestellung bestellung) {
-//		// TODO Datenbanzugriffsschicht statt Mock
-//		bestellung = Mock.createBestellung(bestellung);
-//		//für email
-//		event.fire(bestellung);
-//		
-//		return bestellung;
-//	}
 
-
+	/**
+	 * {inheritDoc}
+	 */
 	@Override
 	public List<Artikel> ladenhueter(int anzahl) {
 		// TODO Auto-generated method stub

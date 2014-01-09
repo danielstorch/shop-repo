@@ -3,30 +3,40 @@ package de.shop.kundenverwaltung.domain;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.TemporalType.DATE;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostPersist;
 import javax.persistence.Table;
 import javax.persistence.Index;
+import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -38,12 +48,14 @@ import javax.persistence.NamedEntityGraphs;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.hibernate.validator.constraints.Email;
+import org.jboss.logging.Logger;
+
 import de.shop.bestellverwaltung.domain.Bestellung;
 import de.shop.util.persistence.AbstractAuditable;
 
 @Entity
 @Table(name = "kunde", indexes = @Index(columnList = "nachname"))
-@XmlRootElement
 @NamedQueries({
 	@NamedQuery(name  = Kunde.FIND_KUNDEN,
                 query = "SELECT k"
@@ -78,24 +90,22 @@ import de.shop.util.persistence.AbstractAuditable;
 	            query = "SELECT k"
 				        + " FROM  Kunde k"
 			            + " WHERE k.adresse.plz = :" + Kunde.PARAM_KUNDE_ADRESSE_PLZ),
-//	@NamedQuery(name = Kunde.FIND_KUNDEN_BY_DATE,
-//			    query = "SELECT k"
-//			            + " FROM  Kunde k"
-//			    		+ " WHERE k.seit = :" + Kunde.PARAM_KUNDE_SEIT),
-//	@NamedQuery(name = Kunde.FIND_PRIVATKUNDEN_FIRMENKUNDEN,
-//			    query = "SELECT k"
-//			            + " FROM  AbstractKunde k"
-//			    		+ " WHERE TYPE(k) IN (Privatkunde, Firmenkunde)")
+	@NamedQuery(name = Kunde.FIND_KUNDEN_BY_DATE,
+			    query = "SELECT k"
+			            + " FROM  Kunde k"
+			    		+ " WHERE k.seit = :" + Kunde.PARAM_KUNDE_SEIT)
 })
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = Kunde.GRAPH_BESTELLUNGEN,
 					  attributeNodes = @NamedAttributeNode("bestellungen"))})
+@Cacheable
+@XmlRootElement
 public class Kunde extends AbstractAuditable implements Serializable {
 	private static final long serialVersionUID = -8477316271106761155L;
+	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 	
 	private static final String NAME_PATTERN = "[A-Z\u00C4\u00D6\u00DC][a-z0-9+-_\u00E4\u00F6\u00FC\u00DF]+";
-	private static final String EMAIL_PATTERN = "[\\w.%-]+@[\\w.%-]+\\.[A-Za-z]{2,4}";
-    private static final String PREFIX_ADEL = "(o'|von|von der|von und zu|van)?";
+	private static final String PREFIX_ADEL = "(o'|von|von der|von und zu|van)?";
 
     public static final String NACHNAME_PATTERN = PREFIX_ADEL + NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
     public static final String VORNAME_PATTERN = NAME_PATTERN + "(-" + NAME_PATTERN + ")?";
@@ -142,25 +152,27 @@ public class Kunde extends AbstractAuditable implements Serializable {
     @Pattern(regexp = VORNAME_PATTERN, message = "{kunde.vorname.pattern}")
 	private String vorname;
 	
-//	@Email()
+	@Email(message = "{kunde.email.pattern}")
 	@Column(unique = true)
 	@NotNull(message = "{kunde.email.notNull}")
 	@Size(max = EMAIL_LENGTH_MAX, message = "{kunde.email.length}")
-	@Pattern(regexp = EMAIL_PATTERN, message = "{kunde.email.pattern}")
 	private String email;
 	
-//	@OneToOne(cascade = {PERSIST, REMOVE}, mappedBy = "kunde")
-	@OneToOne(mappedBy = "kunde", cascade = PERSIST)
+	@OneToOne(cascade = {PERSIST, REMOVE}, mappedBy = "kunde")
 	@NotNull(message = "{kunde.adresse.notNull}")
 	@Valid
 	private Adresse adresse;
+	
+	@Temporal(DATE)
+	@Past(message = "{kunde.seit.past}")
+	private Date seit;
 	
 	@OneToMany
 	@JoinColumn(name = "kunde_fk", nullable = false)
 	@OrderColumn(name = "idx", nullable = false)
 	@XmlTransient
 	private List<Bestellung> bestellungen;
-	
+		
 	@ElementCollection(fetch = EAGER)
 	@CollectionTable(name = "kunde_hobby",
 	                 joinColumns = @JoinColumn(name = "kunde_fk", nullable = false),
@@ -171,6 +183,18 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	
 	@Transient
 	private URI bestellungenUri;
+	
+	@PostPersist
+	protected void postPersist() {
+		LOGGER.debugf("Neuer Kunde mit ID=%d", id);
+	}
+	
+	public void setValues(Kunde k) {
+		nachname = k.nachname;
+		vorname = k.vorname;
+		seit = k.seit;
+		email = k.email;
+	}
 	
 	public Long getId() {
 		return id;
@@ -197,10 +221,23 @@ public class Kunde extends AbstractAuditable implements Serializable {
 		this.adresse = adresse;
 	}
 	public List<Bestellung> getBestellungen() {
-		return bestellungen;
+		if (bestellungen == null) {
+			return null;
+		}		
+		return Collections.unmodifiableList(bestellungen);
 	}
+	
 	public void setBestellungen(List<Bestellung> bestellungen) {
-		this.bestellungen = bestellungen;
+		if (this.bestellungen == null) {
+			this.bestellungen = bestellungen;
+			return;
+		}
+		
+		// Wiederverwendung der vorhandenen Collection
+		this.bestellungen.clear();
+		if (bestellungen != null) {
+			this.bestellungen.addAll(bestellungen);
+		}
 	}
 	public URI getBestellungenUri() {
 		return bestellungenUri;
@@ -220,6 +257,35 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	public void setHobbies(Set<HobbyType> hobbies) {
 		this.hobbies = hobbies;
 	}
+	public Date getSeit() {
+		return seit == null ? null : (Date) seit.clone();
+	}
+	public void setSeit(Date seit) {
+		this.seit = seit == null ? null : (Date) seit.clone();
+	}
+
+	// Parameter, z.B. DateFormat.MEDIUM, Locale.GERMANY
+	// MEDIUM fuer Format dd.MM.yyyy
+	public String getSeitAsString(int style, Locale locale) {
+		Date temp = seit;
+		if (temp == null) {
+			temp = new Date();
+		}
+		final DateFormat f = DateFormat.getDateInstance(style, locale);
+		return f.format(temp);
+	}
+	
+	// Parameter, z.B. DateFormat.MEDIUM, Locale.GERMANY
+	// MEDIUM fuer Format dd.MM.yyyy
+	public void setSeit(String seitStr, int style, Locale locale) {
+		final DateFormat f = DateFormat.getDateInstance(style, locale);
+		try {
+			this.seit = f.parse(seitStr);
+		}
+		catch (ParseException e) {
+			throw new RuntimeException("Kein gueltiges Datumsformat fuer: " + seitStr, e);
+		}
+	}
 	
 	public Kunde addBestellung(Bestellung bestellung) {
 		if (bestellungen == null) {
@@ -230,52 +296,45 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	}
 
 	@Override
+	public String toString() {
+		return "AbstractKunde [id=" + id
+			   + ", nachname=" + nachname + ", vorname=" + vorname
+			   + ", seit=" + getSeitAsString(DateFormat.MEDIUM, Locale.GERMANY)
+			   + ", email=" + email
+			   + ", bestellungenUri=" + bestellungenUri
+			   + ", " + super.toString() + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((nachname == null) ? 0 : nachname.hashCode());
-		result = prime * result + ((vorname == null) ? 0 : vorname.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		Kunde other = (Kunde) obj;
+		}
+		final Kunde other = (Kunde) obj;
+		
 		if (email == null) {
-			if (other.email != null)
+			if (other.email != null) {
 				return false;
-		} else if (!email.equals(other.email))
+			}
+		}
+		else if (!email.equals(other.email)) {
 			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (nachname == null) {
-			if (other.nachname != null)
-				return false;
-		} else if (!nachname.equals(other.nachname))
-			return false;
-		if (vorname == null) {
-			if (other.vorname != null)
-				return false;
-		} else if (!vorname.equals(other.vorname))
-			return false;
+		}
+		
 		return true;
-	}
-	@Override
-	public String toString() {
-		return "Kunde [id=" + id + ", nachname=" + nachname + ", vorname="
-				+ vorname + ", email=" + email + ", adresse=" + adresse
-				+ ", hobbies=" + hobbies + ", bestellungenUri="
-				+ bestellungenUri + "]";
 	}
 }

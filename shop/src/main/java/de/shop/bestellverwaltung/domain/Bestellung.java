@@ -7,8 +7,6 @@ import static javax.persistence.FetchType.EAGER;
 import java.io.Serializable;
 import java.net.URI;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 import static de.shop.util.Constants.KEINE_ID;
@@ -22,9 +20,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedEntityGraphs;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -33,7 +28,6 @@ import javax.persistence.Table;
 import javax.persistence.Index;
 import javax.persistence.Transient;
 import javax.validation.Valid;
-import javax.validation.constraints.Digits;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -53,13 +47,8 @@ import de.shop.util.persistence.AbstractAuditable;
 	@NamedQuery(name  = Bestellung.FIND_KUNDE_BY_ID,
  			    query = "SELECT b.kunde"
                         + " FROM   Bestellung b"
-  			            + " WHERE  b.id = :" + Bestellung.PARAM_ID)
-})
-//@NamedEntityGraphs({
-//	@NamedEntityGraph(name = Bestellung.GRAPH_LIEFERUNGEN,
-//					  attributeNodes = @NamedAttributeNode("lieferungen"))
-//})
-//@Cacheable
+  			            + " WHERE  b.id = :" + Bestellung.PARAM_ID)})
+@Cacheable
 public class Bestellung extends AbstractAuditable implements Serializable {
 	private static final long serialVersionUID = 1618359234119003714L;
 	private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
@@ -77,10 +66,6 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 	@GeneratedValue
 	@Basic(optional = false)
 	private Long id = KEINE_ID;
-	
-	@Digits(integer = 10, fraction = 2)
-	private BigDecimal gesamtpreis;
-	
 	
 	@Basic(optional = false)
 	private boolean ausgeliefert;
@@ -128,12 +113,6 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 	public void setKundeUri(URI kundeUri) {
 		this.kundeUri = kundeUri;
 	}
-	public BigDecimal getGesamtpreis() {
-		return gesamtpreis;
-	}
-	public void setGesamtpreis(BigDecimal gesamtpreis) {
-		this.gesamtpreis = gesamtpreis;
-	}
 	public Set<Posten> getPosten() {
 		return posten;
 	}
@@ -158,8 +137,6 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (ausgeliefert ? 1231 : 1237);
-		result = prime * result
-				+ ((gesamtpreis == null) ? 0 : gesamtpreis.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((kunde == null) ? 0 : kunde.hashCode());
 		return result;
@@ -175,11 +152,6 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 		Bestellung other = (Bestellung) obj;
 		if (ausgeliefert != other.ausgeliefert)
 			return false;
-		if (gesamtpreis == null) {
-			if (other.gesamtpreis != null)
-				return false;
-		} else if (!gesamtpreis.equals(other.gesamtpreis))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -194,19 +166,8 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "Bestellung [id=" + id + ", gesamtpreis=" + gesamtpreis
+		return "Bestellung [id=" + id
 				+ ", ausgeliefert=" + ausgeliefert + ", posten=" + posten
 				+ ", kundeUri=" + kundeUri + "]";
-	}
-	
-	//Rechnet den gesamtpreis aus aller posten
-	public BigDecimal gesamtpreisBerechnung() {
-		BigDecimal gp = new BigDecimal(0.0);
-		
-		for (Posten p : posten) {
-			gp = gp.add((p.getArtikel().getPreis()).multiply(new BigDecimal(p.getAnzahl())));
-		}
-		
-		return gp;
 	}
 }

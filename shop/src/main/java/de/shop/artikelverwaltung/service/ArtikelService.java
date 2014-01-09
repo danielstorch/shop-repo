@@ -20,9 +20,6 @@ import javax.persistence.criteria.Predicate;
 
 import de.shop.artikelverwaltung.domain.Artikel;
 import de.shop.util.interceptor.Log;
-//import de.shop.util.Mock;
-
-import java.util.Date;
 
 import com.google.common.base.Strings;
 
@@ -134,7 +131,10 @@ public class ArtikelService implements Serializable {
 	}
 	
 
-	
+	/**
+	 * Erstellt Artikel
+	 * @return Erzeugter Artikel
+	 */
 	public <T extends Artikel> T createArtikel (T artikel) {
 		if(artikel == null){
 			return null;
