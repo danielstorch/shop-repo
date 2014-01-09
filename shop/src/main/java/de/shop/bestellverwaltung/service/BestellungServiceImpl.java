@@ -75,7 +75,7 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 	 * @exception ConstraintViolationException zu @NotNull, falls kein Kunde gefunden wurde
 	 */
 	@Override
-	@NotNull(message = "{bestellung.kunde.notFound.id}")
+	@NotNull(message = "{kunde.notFound.id}")
 	public Kunde findKundeById(Long id) {
 		try {
 			return em.createNamedQuery(Bestellung.FIND_KUNDE_BY_ID, Kunde.class)

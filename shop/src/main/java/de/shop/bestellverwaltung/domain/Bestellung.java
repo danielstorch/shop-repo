@@ -72,7 +72,7 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 	
 	@OneToMany(fetch = EAGER, cascade = { PERSIST, REMOVE })
 	@JoinColumn(name = "bestellung_fk", nullable = false)
-	@NotEmpty(message = "{bestellverwaltung.bestellung.posten.notEmpty}")
+	@NotEmpty(message = "{bestellung.posten.notEmpty}")
 	@Valid
 	private Set<Posten> posten;
 	

@@ -1,7 +1,6 @@
 package de.shop.artikelverwaltung.service;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.criteria.Path;
 
@@ -59,7 +58,7 @@ public class ArtikelService implements Serializable {
 	 * @return Liste der gefundenen Artikel
 	 * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
 	 */
-	@Size(min = 1, message = "{artikel.notFound.ids}")
+	@Size(min = 1, message = "{artikel.notFound.id}")
 	public List<Artikel> findArtikelByIds(List<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return Collections.emptyList();
@@ -117,20 +116,6 @@ public class ArtikelService implements Serializable {
 				 .getResultList();
 	}
 	
-	/**
-	 * Suche Artikel, die preiswerter als ein bestimmter Preis sind
-	 * @param preis Maximaler Preis
-	 * @return Liste der Artikel mit einem geringeren Preis als die angegebene Obergrenze
-	 * @exception ConstraintViolationException zu @Size, falls die Liste leer ist
-	 */
-	@Size(min = 1, message = "{kunde.notFound.maxPreis}")
-	public List<Artikel> findArtikelByMaxPreis(BigDecimal preis) {
-		return em.createNamedQuery(Artikel.FIND_ARTIKEL_MAX_PREIS, Artikel.class)
-				 .setParameter(Artikel.PARAM_PREIS, preis)
-				 .getResultList();
-	}
-	
-
 	/**
 	 * Erstellt Artikel
 	 * @return Erzeugter Artikel
