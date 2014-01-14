@@ -120,8 +120,8 @@ public class ArtikelService implements Serializable {
 	 * Erstellt Artikel
 	 * @return Erzeugter Artikel
 	 */
-	public <T extends Artikel> T createArtikel (T artikel) {
-		if(artikel == null){
+	public <T extends Artikel> T createArtikel(T artikel) {
+		if (artikel == null) {
 			return null;
 		}
 		
@@ -135,8 +135,8 @@ public class ArtikelService implements Serializable {
 		return artikel;
 	}
 
-	public<T extends Artikel> T updateArtikel(T artikel) {
-		if(artikel == null) {
+	public <T extends Artikel> T updateArtikel(T artikel) {
+		if (artikel == null) {
 			return null;
 		}
 		

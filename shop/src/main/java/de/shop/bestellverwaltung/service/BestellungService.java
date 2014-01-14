@@ -19,3 +19,6 @@ public interface BestellungService {
 	List<Artikel> ladenhueter(int anzahl);
 //	Kunde findKundeByBestellungId(Long id);
 }
+
+
+

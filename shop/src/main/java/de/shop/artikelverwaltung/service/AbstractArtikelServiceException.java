@@ -13,3 +13,4 @@ public abstract class AbstractArtikelServiceException extends AbstractShopExcept
             super(msg, t);
     }
 }
+

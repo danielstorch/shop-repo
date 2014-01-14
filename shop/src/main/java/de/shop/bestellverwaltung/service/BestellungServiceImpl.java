@@ -54,7 +54,7 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 			return null;
 		}
 		
-		Bestellung bestellung =em.find(Bestellung.class, id);
+		final Bestellung bestellung = em.find(Bestellung.class, id);
 //		EntityGraph<?> entityGraph;
 //		Map<String, Object> props;
 //		switch (fetch) {
@@ -201,3 +201,6 @@ public class BestellungServiceImpl implements BestellungService, Serializable {
 		return null;
 	}
 }
+
+
+

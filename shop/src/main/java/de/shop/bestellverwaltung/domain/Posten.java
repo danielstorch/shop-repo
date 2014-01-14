@@ -24,7 +24,7 @@ import de.shop.util.persistence.AbstractAuditable;
 @Entity
 @Table(indexes = {
 		@Index(columnList = "bestellung_fk"),
-		@Index(columnList = "artikel_fk" )
+		@Index(columnList = "artikel_fk")
 })
 @NamedQueries({
     @NamedQuery(name  = Posten.FIND_LADENHUETER,
@@ -100,18 +100,20 @@ public class Posten extends AbstractAuditable implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Posten other = (Posten) obj;
+		final Posten other = (Posten) obj;
 		if (anzahl != other.anzahl)
 			return false;
 		if (artikel == null) {
 			if (other.artikel != null)
 				return false;
-		} else if (!artikel.equals(other.artikel))
+		} 
+		else if (!artikel.equals(other.artikel))
 			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} 
+		else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

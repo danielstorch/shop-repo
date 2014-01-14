@@ -120,7 +120,7 @@ public class KundeResource {
              for (Kunde kunde : all) {
                      setStructuralLinks(kunde, uriInfo);
              }
-             return Response.ok(new GenericEntity<List<Kunde>>(all) {})
+             return Response.ok(new GenericEntity<List<Kunde>>(all) { })
                              .links(getTransitionalLinksKunden(all, uriInfo))
                              .build();
      }
@@ -172,25 +172,30 @@ public class KundeResource {
              // .map(Bestellung::getId)
              // .forEach(id -> bestellungenIds.add(id));
              
-             return Response.ok(new GenericEntity<Collection<Long>>(bestellungenIds) {})
+             return Response.ok(new GenericEntity<Collection<Long>>(bestellungenIds) { })
                               .build();
      }
      
 	 @GET
      public Response findKunden(
-                     @QueryParam(KUNDEN_NACHNAME_QUERY_PARAM) @Pattern(regexp = Kunde.NACHNAME_PATTERN, message = "{kunde.nachname.pattern}") String nachname,
-                     @QueryParam(KUNDEN_PLZ_QUERY_PARAM) @Pattern(regexp = "\\d{5}", message = "{adresse.plz}") String plz,
+                     @QueryParam(KUNDEN_NACHNAME_QUERY_PARAM) @Pattern(regexp = Kunde.NACHNAME_PATTERN, 
+                     message = "{kunde.nachname.pattern}") String nachname,
+                     @QueryParam(KUNDEN_PLZ_QUERY_PARAM) @Pattern(regexp = "\\d{5}", 
+                     message = "{adresse.plz}") String plz,
                      @QueryParam(KUNDEN_EMAIL_QUERY_PARAM) @Email(message = "{kunde.email}") String email) {
              List<? extends Kunde> kunden = null;
              Kunde kunde = null;
              // TODO Mehrere Query-Parameter koennen angegeben sein
              if (!Strings.isNullOrEmpty(nachname)) {
                      kunden = ks.findKundenByNachname(nachname, FetchType.NUR_KUNDE);
-             } else if (!Strings.isNullOrEmpty(plz)) {
+             } 
+             else if (!Strings.isNullOrEmpty(plz)) {
                      kunden = ks.findKundenByPLZ(plz);
-             } else if (!Strings.isNullOrEmpty(email)) {
+             } 
+             else if (!Strings.isNullOrEmpty(email)) {
                      kunde = ks.findKundeByEmail(email);
-             } else {
+             } 
+             else {
                      kunden = ks.findAllKunden(FetchType.NUR_KUNDE, OrderType.ID);
              }
 
@@ -206,7 +211,8 @@ public class KundeResource {
                      entity = new GenericEntity<List<? extends Kunde>>(kunden) {
                      };
                      links = getTransitionalLinksKunden(kunden, uriInfo);
-             } else if (kunde != null) {
+             } 
+             else if (kunde != null) {
                      entity = kunde;
                      links = getTransitionalLinks(kunde, uriInfo);
              }
@@ -244,7 +250,7 @@ public class KundeResource {
 		kunde.setId(KEINE_ID);
 		
 		final Adresse adresse = kunde.getAdresse();
-		if(adresse != null) {
+		if (adresse != null) {
 			adresse.setKunde(kunde);
 		}
 		

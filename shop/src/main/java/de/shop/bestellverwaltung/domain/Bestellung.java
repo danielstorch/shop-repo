@@ -47,7 +47,7 @@ import de.shop.util.persistence.AbstractAuditable;
 	@NamedQuery(name  = Bestellung.FIND_KUNDE_BY_ID,
  			    query = "SELECT b.kunde"
                         + " FROM   Bestellung b"
-  			            + " WHERE  b.id = :" + Bestellung.PARAM_ID)})
+  			            + " WHERE  b.id = :" + Bestellung.PARAM_ID) })
 @Cacheable
 public class Bestellung extends AbstractAuditable implements Serializable {
 	private static final long serialVersionUID = 1618359234119003714L;
@@ -149,18 +149,20 @@ public class Bestellung extends AbstractAuditable implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Bestellung other = (Bestellung) obj;
+		final Bestellung other = (Bestellung) obj;
 		if (ausgeliefert != other.ausgeliefert)
 			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} 
+		else if (!id.equals(other.id))
 			return false;
 		if (kunde == null) {
 			if (other.kunde != null)
 				return false;
-		} else if (!kunde.equals(other.kunde))
+		} 
+		else if (!kunde.equals(other.kunde))
 			return false;
 		return true;
 	}

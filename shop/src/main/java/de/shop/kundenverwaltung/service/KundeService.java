@@ -327,7 +327,8 @@ public class KundeService implements Serializable {
 		}
 		
 		// Bestellungen laden, damit sie anschl. ueberprueft werden koennen
-		kunde = findKundeById(kunde.getId(), FetchType.MIT_BESTELLUNGEN);  // Kein Aufruf als Business-Methode //kunde.getId()
+		// Kein Aufruf als Business-Methode //kunde.getId()
+		kunde = findKundeById(kunde.getId(), FetchType.MIT_BESTELLUNGEN); 
 		if (kunde == null) {
 			return;
 		}

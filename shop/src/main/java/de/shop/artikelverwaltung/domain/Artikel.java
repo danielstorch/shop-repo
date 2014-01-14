@@ -40,7 +40,7 @@ import de.shop.util.persistence.AbstractAuditable;
             	query = "SELECT      a"
                         + " FROM     Artikel a"
 						+ " WHERE    a.preis < :" + Artikel.PARAM_PREIS
-			 	        + " ORDER BY a.id ASC")})
+			 	        + " ORDER BY a.id ASC") })
 @Cacheable
 @XmlRootElement
 public class Artikel extends AbstractAuditable implements Serializable {

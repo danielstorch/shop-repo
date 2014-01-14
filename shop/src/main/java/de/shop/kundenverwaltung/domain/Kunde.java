@@ -97,7 +97,7 @@ import de.shop.util.persistence.AbstractAuditable;
 })
 @NamedEntityGraphs({
 	@NamedEntityGraph(name = Kunde.GRAPH_BESTELLUNGEN,
-					  attributeNodes = @NamedAttributeNode("bestellungen"))})
+					  attributeNodes = @NamedAttributeNode("bestellungen")) })
 @Cacheable
 @XmlRootElement
 public class Kunde extends AbstractAuditable implements Serializable {
@@ -158,7 +158,7 @@ public class Kunde extends AbstractAuditable implements Serializable {
 	@Size(max = EMAIL_LENGTH_MAX, message = "{kunde.email.length}")
 	private String email;
 	
-	@OneToOne(cascade = {PERSIST, REMOVE}, mappedBy = "kunde")
+	@OneToOne(cascade = {PERSIST, REMOVE }, mappedBy = "kunde")
 	@NotNull(message = "{kunde.adresse.notNull}")
 	@Valid
 	private Adresse adresse;
@@ -338,3 +338,4 @@ public class Kunde extends AbstractAuditable implements Serializable {
 		return true;
 	}
 }
+
